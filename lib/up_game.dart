@@ -6,10 +6,17 @@ class UpGame extends FlameGame {
   late final RouterComponent router;
 
   @override
+  bool get debugMode => true;
+
+  @override
   Future<void> onLoad() async {
     await images.load(
-      'Idle (32x32).png',
+      'ninja_frog/Idle (32x32).png',
       key: 'frog_idle',
+    );
+    await images.load(
+      'ninja_frog/Run (32x32).png',
+      key: 'frog_run',
     );
 
     add(
