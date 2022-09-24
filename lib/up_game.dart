@@ -4,7 +4,7 @@ import 'package:flame/input.dart';
 
 import 'game_page.dart';
 
-class UpGame extends FlameGame with HasDraggables {
+class UpGame extends FlameGame with HasDraggables, HasCollisionDetection {
   late final RouterComponent router;
 
   @override
