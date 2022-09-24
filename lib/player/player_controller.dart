@@ -17,10 +17,18 @@ class LocalPlayerController extends PlayerController {
   @override
   void update(double dt) {
     if (joystick.direction != JoystickDirection.idle) {
-      _player.animationState = PlayerState.running;
+      _player.playerAnimation.current = PlayerState.running;
       _player.move(joystick.delta, dt);
+
+      if (joystick.delta.x < 0 &&
+          !_player.playerAnimation.isFlippedHorizontally) {
+        _player.playerAnimation.flipHorizontallyAroundCenter();
+      } else if (joystick.delta.x > 0 &&
+          _player.playerAnimation.isFlippedHorizontally) {
+        _player.playerAnimation.flipHorizontallyAroundCenter();
+      }
     } else {
-      _player.animationState = PlayerState.idle;
+      _player.playerAnimation.current = PlayerState.idle;
     }
   }
 }
