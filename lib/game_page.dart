@@ -1,32 +1,45 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
-import 'package:flame/sprite.dart';
+import 'package:flutter/material.dart';
 
+import 'player.dart';
 import 'up_game.dart';
 
 class GamePage extends Component with HasGameRef<UpGame> {
-  late final SpriteAnimationComponent _characterSprite;
-
+  late final JoystickComponent _joystick;
+  Player _player = Player();
   @override
-  Future<void>? onLoad() {
-    final spritesheet = SpriteSheet(
-      image: gameRef.images.fromCache('frog_run'),
-      srcSize: Vector2.all(32.0),
+  Future<void>? onLoad() async {
+    _joystick = JoystickComponent(
+      knob: SpriteComponent(
+        sprite: Sprite(gameRef.images.fromCache('joystick_position')),
+        size: Vector2.all(70),
+      ),
+      background: SpriteComponent(
+        sprite: Sprite(gameRef.images.fromCache('joystick_radius')),
+        size: Vector2.all(100),
+      ),
+      margin: const EdgeInsets.only(left: 40, bottom: 40),
     );
 
-    final animation = spritesheet.createAnimation(row: 0, stepTime: 0.05);
+    _player.position = Vector2(0, 0);
 
     addAll([
-      _characterSprite = SpriteAnimationComponent(
-        animation: animation,
-        position: Vector2(0, 0),
-        size: Vector2.all(100.0),
-      ),
+      FpsTextComponent(),
+      _player,
+      _joystick,
     ]);
+  }
 
-    return null;
+  @override
+  void update(double dt) {
+    super.update(dt);
+    if (_joystick.direction != JoystickDirection.idle) {
+      _player.animationState = PlayerState.running;
+      _player.move(_joystick.delta, dt);
+    } else {
+      _player.animationState = PlayerState.idle;
+    }
   }
 }
 
