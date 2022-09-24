@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
+import 'package:upgame/player/player_controller.dart';
 import 'package:upgame/up_game.dart';
 
 enum PlayerState { idle, running }
@@ -7,8 +8,10 @@ enum PlayerState { idle, running }
 class Player extends PositionComponent with HasGameRef<UpGame> {
   final double maxSpeed = 10.0;
   late final SpriteAnimationGroupComponent<PlayerState> _playerAnimation;
-
-  Player();
+  final PlayerController? playerController;
+  Player({this.playerController}) {
+    playerController?.player = this;
+  }
 
   PlayerState get animationState => _playerAnimation.current!;
 

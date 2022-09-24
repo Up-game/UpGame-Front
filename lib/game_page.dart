@@ -1,13 +1,16 @@
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:upgame/player/player_controller.dart';
 
-import 'player.dart';
+import 'player/player.dart';
 import 'up_game.dart';
 
 class GamePage extends Component with HasGameRef<UpGame> {
   late final JoystickComponent _joystick;
-  Player _player = Player();
+  late final LocalPlayerController _playerController;
+  late final Player _player;
+
   @override
   Future<void>? onLoad() async {
     _joystick = JoystickComponent(
@@ -22,6 +25,9 @@ class GamePage extends Component with HasGameRef<UpGame> {
       margin: const EdgeInsets.only(left: 40, bottom: 40),
     );
 
+    _playerController = LocalPlayerController(_joystick);
+    _player = Player(playerController: _playerController);
+
     _player.position = Vector2(0, 0);
 
     addAll([
@@ -34,12 +40,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
   @override
   void update(double dt) {
     super.update(dt);
-    if (_joystick.direction != JoystickDirection.idle) {
-      _player.animationState = PlayerState.running;
-      _player.move(_joystick.delta, dt);
-    } else {
-      _player.animationState = PlayerState.idle;
-    }
+    _playerController.update(dt);
   }
 }
 
