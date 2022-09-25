@@ -28,7 +28,46 @@ class Player extends PositionComponent
     super.onCollision(intersectionPoints, other);
     // block player from moving out of the screen.
     if (other is ScreenHitbox) {
-      position = lastPosition.clone();
+      final screenSize = gameRef.size;
+
+      final points = intersectionPoints
+          .map((p) => gameRef.camera.projectVector(p))
+          .toList();
+
+      Vector2 temp = Vector2.zero();
+
+      if (intersectionPoints.any((screenPoint) {
+        temp = screenPoint;
+        return gameRef.camera.projectVector(screenPoint).x == 0;
+      })) {
+        // Left wall
+        log("left");
+        position.x = temp.x + size.x / 2;
+      }
+      if (intersectionPoints.any((screenPoint) {
+        temp = screenPoint;
+        return gameRef.camera.projectVector(screenPoint).y == 0;
+      })) {
+        // Top wall
+        log("top");
+        position.y = temp.y + size.y / 2;
+      }
+      if (intersectionPoints.any((screenPoint) {
+        temp = screenPoint;
+        return screenPoint.x == screenSize.x;
+      })) {
+        // Right wall
+        log("right");
+        position.x = temp.x - size.x / 2;
+      }
+      if (intersectionPoints.any((screenPoint) {
+        temp = screenPoint;
+        return gameRef.camera.projectVector(screenPoint).y == screenSize.y;
+      })) {
+        // Bottom wall
+        log("bottom");
+        position.y = temp.y - size.y / 2;
+      }
     }
   }
 
@@ -63,8 +102,8 @@ class Player extends PositionComponent
       current: PlayerState.running,
       size: size,
     );
-    final rectangleHitbox = RectangleHitbox();
-    rectangleHitbox.debugColor = Colors.yellow;
+    final rectangleHitbox = RectangleHitbox()..debugColor = Colors.yellow;
+
     addAll([
       playerAnimation,
       rectangleHitbox,
