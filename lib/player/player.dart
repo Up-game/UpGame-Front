@@ -8,6 +8,8 @@ import 'package:upgame/player/player_controller.dart';
 import 'package:upgame/up_game.dart';
 import 'package:upgame/utils.dart';
 
+import '../game_page.dart';
+
 enum PlayerState { idle, running }
 
 class Player extends PositionComponent
@@ -28,47 +30,14 @@ class Player extends PositionComponent
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
     // block player from moving out of the screen.
-    if (other is ScreenHitbox) {
-      final screenSize = gameRef.size;
-
-      final points = intersectionPoints
-          .map((p) => Pair(p, gameRef.camera.projectVector(p)))
-          .toList();
-
-      var temp = Vector2.zero();
-
-      if (points.any((screenPoint) {
-        temp = screenPoint.first;
-        return screenPoint.second.x == 0;
-      })) {
-        // Left wall
-        log("left");
-        position.x = temp.x + size.x / 2;
-      }
-      if (points.any((screenPoint) {
-        temp = screenPoint.first;
-        return screenPoint.second.y == 0;
-      })) {
-        // Top wall
-        log("top");
-        position.y = temp.y + size.y / 2;
-      }
-      if (points.any((screenPoint) {
-        temp = screenPoint.first;
-        return screenPoint.second.x == screenSize.x;
-      })) {
-        // Right wall
-        log("right");
-        position.x = temp.x - size.x / 2;
-      }
-      if (points.any((screenPoint) {
-        temp = screenPoint.first;
-        return screenPoint.second.y == screenSize.y;
-      })) {
-        // Bottom wall
-        log("bottom");
-        position.y = temp.y - size.y / 2;
-      }
+    if (other is LeftBoundary) {
+      position.x = intersectionPoints.first.x + size.x / 2;
+    }
+    if (other is RightBoundary) {
+      position.x = intersectionPoints.first.x - size.x / 2;
+    }
+    if (other is BottomBoundary) {
+      position.y = intersectionPoints.first.y - size.y / 2;
     }
   }
 

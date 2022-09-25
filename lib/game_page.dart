@@ -1,3 +1,4 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +38,10 @@ class GamePage extends Component with HasGameRef<UpGame> {
     );
 
     gameRef.add(FpsTextComponent());
-    add(Background(Color.fromARGB(255, 0, 255, 0)));
-    add(ScreenHitbox());
+    //add(ScreenHitbox());
+    add(LeftBoundary());
+    add(BottomBoundary());
+    add(RightBoundary());
     add(_player);
     gameRef.add(_joystick);
   }
@@ -57,5 +60,37 @@ class Background extends Component {
   @override
   void render(Canvas canvas) {
     canvas.drawColor(color, BlendMode.srcATop);
+  }
+}
+
+class LeftBoundary extends PositionComponent
+    with CollisionCallbacks, HasGameRef<UpGame> {
+  @override
+  Future<void>? onLoad() async {
+    add(RectangleHitbox(
+        position: gameRef.camera.worldBounds!.topLeft.toVector2(),
+        size: Vector2(1, 1400)));
+  }
+}
+
+class RightBoundary extends PositionComponent
+    with CollisionCallbacks, HasGameRef<UpGame> {
+  @override
+  Future<void>? onLoad() async {
+    add(RectangleHitbox(
+        position: gameRef.camera.worldBounds!.topRight.toVector2()
+          ..sub(Vector2(1, 0)),
+        size: Vector2(1, 1400)));
+  }
+}
+
+class BottomBoundary extends PositionComponent
+    with CollisionCallbacks, HasGameRef<UpGame> {
+  @override
+  Future<void>? onLoad() async {
+    add(RectangleHitbox(
+        position: gameRef.camera.worldBounds!.bottomLeft.toVector2()
+          ..sub(Vector2(0, 1)),
+        size: Vector2(1400, 1)));
   }
 }
