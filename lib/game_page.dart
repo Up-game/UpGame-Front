@@ -1,15 +1,13 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:upgame/FixedHorizontalViewPort.dart';
 import 'package:upgame/player/player_controller.dart';
 
 import 'player/player.dart';
 import 'up_game.dart';
 
-const worldBoundary = Rect.fromLTRB(-700, -700, 700, 700);
+const worldBoundary = Rect.fromLTRB(-400, -800, 400, 0);
 
 class GamePage extends Component with HasGameRef<UpGame> {
   late final JoystickComponent _joystick;
@@ -36,14 +34,15 @@ class GamePage extends Component with HasGameRef<UpGame> {
       playerController: _playerController,
     );
 
-    gameRef.camera.followVector2(Vector2(0, 0));
+    gameRef.camera.followVector2(
+      Vector2(0, -400 + 400 - gameRef.size.y / 2),
+    );
+
     //gameRef.camera.followComponent(_player, worldBounds: worldBoundary);
 
     gameRef.add(FpsTextComponent());
     add(Background(Colors.yellow));
-    //add(ScreenHitbox());
     add(BottomBoundary());
-
     add(RightBoundary());
     add(LeftBoundary());
 
@@ -71,35 +70,36 @@ class Background extends Component {
 
 class LeftBoundary extends PositionComponent
     with CollisionCallbacks, HasGameRef<UpGame> {
+  final double _height = 800;
   @override
   Future<void>? onLoad() async {
     add(RectangleHitbox(
-        position: gameRef.camera
-            .screenToWorld(Vector2(-gameRef.size.x / 2, -gameRef.size.y / 2)),
-        size: Vector2(1, gameRef.size.y)));
+      position: Vector2(-400, -_height),
+      size: Vector2(1, _height),
+    ));
   }
 }
 
 class RightBoundary extends PositionComponent
     with CollisionCallbacks, HasGameRef<UpGame> {
+  final double _height = 800;
   @override
   Future<void>? onLoad() async {
     add(RectangleHitbox(
-        position: gameRef.camera
-            .screenToWorld(Vector2(gameRef.size.x / 2, -gameRef.size.y / 2))
-          ..sub(Vector2(1, 0)),
-        size: Vector2(1, gameRef.size.y)));
+      position: Vector2(400, -_height),
+      size: Vector2(1, _height),
+    ));
   }
 }
 
 class BottomBoundary extends PositionComponent
     with CollisionCallbacks, HasGameRef<UpGame> {
+  final double _height = 800;
   @override
   Future<void>? onLoad() async {
     add(RectangleHitbox(
-        position: gameRef.camera
-            .screenToWorld(Vector2(-gameRef.size.x / 2, gameRef.size.y / 2))
-          ..sub(Vector2(0, 1)),
-        size: Vector2(gameRef.size.x, 1)));
+      position: Vector2(-400, 0),
+      size: Vector2(_height, 1),
+    ));
   }
 }
