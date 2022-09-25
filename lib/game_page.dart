@@ -69,7 +69,7 @@ class LeftBoundary extends PositionComponent
   Future<void>? onLoad() async {
     add(RectangleHitbox(
         position: gameRef.camera.worldBounds!.topLeft.toVector2(),
-        size: Vector2(1, 1400)));
+        size: Vector2(1, gameRef.camera.worldBounds!.size.width)));
   }
 }
 
@@ -80,7 +80,7 @@ class RightBoundary extends PositionComponent
     add(RectangleHitbox(
         position: gameRef.camera.worldBounds!.topRight.toVector2()
           ..sub(Vector2(1, 0)),
-        size: Vector2(1, 1400)));
+        size: Vector2(1, gameRef.camera.worldBounds!.size.width)));
   }
 }
 
@@ -91,6 +91,6 @@ class BottomBoundary extends PositionComponent
     add(RectangleHitbox(
         position: gameRef.camera.worldBounds!.bottomLeft.toVector2()
           ..sub(Vector2(0, 1)),
-        size: Vector2(1400, 1)));
+        size: Vector2(gameRef.camera.worldBounds!.size.height, 1)));
   }
 }
