@@ -6,6 +6,7 @@ import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:upgame/player/player_controller.dart';
 import 'package:upgame/up_game.dart';
+import 'package:upgame/utils.dart';
 
 enum PlayerState { idle, running }
 
@@ -31,38 +32,38 @@ class Player extends PositionComponent
       final screenSize = gameRef.size;
 
       final points = intersectionPoints
-          .map((p) => gameRef.camera.projectVector(p))
+          .map((p) => Pair(p, gameRef.camera.projectVector(p)))
           .toList();
 
-      Vector2 temp = Vector2.zero();
+      var temp = Vector2.zero();
 
-      if (intersectionPoints.any((screenPoint) {
-        temp = screenPoint;
-        return gameRef.camera.projectVector(screenPoint).x == 0;
+      if (points.any((screenPoint) {
+        temp = screenPoint.first;
+        return screenPoint.second.x == 0;
       })) {
         // Left wall
         log("left");
         position.x = temp.x + size.x / 2;
       }
-      if (intersectionPoints.any((screenPoint) {
-        temp = screenPoint;
-        return gameRef.camera.projectVector(screenPoint).y == 0;
+      if (points.any((screenPoint) {
+        temp = screenPoint.first;
+        return screenPoint.second.y == 0;
       })) {
         // Top wall
         log("top");
         position.y = temp.y + size.y / 2;
       }
-      if (intersectionPoints.any((screenPoint) {
-        temp = screenPoint;
-        return screenPoint.x == screenSize.x;
+      if (points.any((screenPoint) {
+        temp = screenPoint.first;
+        return screenPoint.second.x == screenSize.x;
       })) {
         // Right wall
         log("right");
         position.x = temp.x - size.x / 2;
       }
-      if (intersectionPoints.any((screenPoint) {
-        temp = screenPoint;
-        return gameRef.camera.projectVector(screenPoint).y == screenSize.y;
+      if (points.any((screenPoint) {
+        temp = screenPoint.first;
+        return screenPoint.second.y == screenSize.y;
       })) {
         // Bottom wall
         log("bottom");
@@ -102,7 +103,9 @@ class Player extends PositionComponent
       current: PlayerState.running,
       size: size,
     );
-    final rectangleHitbox = RectangleHitbox()..debugColor = Colors.yellow;
+    final rectangleHitbox = RectangleHitbox()
+      ..debugColor = Colors.yellow
+      ..collisionType = CollisionType.passive;
 
     addAll([
       playerAnimation,

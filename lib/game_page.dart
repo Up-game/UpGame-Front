@@ -37,6 +37,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
     );
 
     gameRef.add(FpsTextComponent());
+    add(Background(Color.fromARGB(255, 0, 255, 0)));
     add(ScreenHitbox());
     add(_player);
     gameRef.add(_joystick);
