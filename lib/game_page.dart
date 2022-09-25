@@ -13,7 +13,6 @@ class GamePage extends Component with HasGameRef<UpGame> {
 
   @override
   Future<void>? onLoad() async {
-    gameRef.camera.followVector2(Vector2(0, 0));
     _joystick = JoystickComponent(
       knob: SpriteComponent(
         sprite: Sprite(gameRef.images.fromCache('joystick_position')),
@@ -27,17 +26,20 @@ class GamePage extends Component with HasGameRef<UpGame> {
     );
 
     _playerController = LocalPlayerController(_joystick);
-    _player =
-        Player(position: Vector2(0, 0), playerController: _playerController);
+    _player = Player(
+      position: Vector2(0, 0),
+      playerController: _playerController,
+    );
 
-    _player.position = Vector2(0, 0);
-
-    addAll([
-      FpsTextComponent(),
+    gameRef.camera.followComponent(
       _player,
-      _joystick,
-      ScreenHitbox(),
-    ]);
+      worldBounds: const Rect.fromLTRB(-700, -700, 700, 700),
+    );
+
+    gameRef.add(FpsTextComponent());
+    add(ScreenHitbox());
+    add(_player);
+    gameRef.add(_joystick);
   }
 
   @override

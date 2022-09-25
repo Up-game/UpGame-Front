@@ -26,17 +26,16 @@ class Player extends PositionComponent
   @override
   void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollision(intersectionPoints, other);
-    print("coucou");
+    // block player from moving out of the screen.
+    if (other is ScreenHitbox) {
+      position = lastPosition.clone();
+    }
   }
 
   @override
   void onCollisionStart(
       Set<Vector2> intersectionPoints, PositionComponent other) {
     super.onCollisionStart(intersectionPoints, other);
-    if (other is ScreenHitbox) {
-      log(intersectionPoints.toString());
-      position = lastPosition.clone();
-    }
   }
 
   void move(Vector2 direction, double dt) {
