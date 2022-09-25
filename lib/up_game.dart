@@ -14,6 +14,16 @@ class UpGame extends FlameGame with HasDraggables, HasCollisionDetection {
   Future<void> onLoad() async {
     await loadAssets();
 
+    const fixedWidth = 720.0;
+    final ratio = fixedWidth / size.x;
+    camera.viewport =
+        FixedResolutionViewport(Vector2(fixedWidth, size.y * ratio));
+
+    // final fixedWidth = 300.0;
+    // final ratio = size.x / fixedWidth;
+    // camera.viewport =
+    //     FixedResolutionViewport(Vector2(fixedWidth, size.y * ratio));
+
     add(
       router = RouterComponent(
         routes: {

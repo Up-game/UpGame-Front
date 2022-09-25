@@ -1,11 +1,15 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:upgame/FixedHorizontalViewPort.dart';
 import 'package:upgame/player/player_controller.dart';
 
 import 'player/player.dart';
 import 'up_game.dart';
+
+const worldBoundary = Rect.fromLTRB(-700, -700, 700, 700);
 
 class GamePage extends Component with HasGameRef<UpGame> {
   late final JoystickComponent _joystick;
@@ -32,17 +36,19 @@ class GamePage extends Component with HasGameRef<UpGame> {
       playerController: _playerController,
     );
 
-    gameRef.camera.followComponent(
-      _player,
-      worldBounds: const Rect.fromLTRB(-700, -700, 700, 700),
-    );
+    gameRef.camera.followVector2(Vector2(0, 0));
+    //gameRef.camera.followComponent(_player, worldBounds: worldBoundary);
 
     gameRef.add(FpsTextComponent());
+    add(Background(Colors.yellow));
     //add(ScreenHitbox());
-    add(LeftBoundary());
     add(BottomBoundary());
+
     add(RightBoundary());
+    add(LeftBoundary());
+
     add(_player);
+    add(Player(position: Vector2(100, 100)));
     gameRef.add(_joystick);
   }
 
@@ -68,8 +74,9 @@ class LeftBoundary extends PositionComponent
   @override
   Future<void>? onLoad() async {
     add(RectangleHitbox(
-        position: gameRef.camera.worldBounds!.topLeft.toVector2(),
-        size: Vector2(1, gameRef.camera.worldBounds!.size.width)));
+        position: gameRef.camera
+            .screenToWorld(Vector2(-gameRef.size.x / 2, -gameRef.size.y / 2)),
+        size: Vector2(1, gameRef.size.y)));
   }
 }
 
@@ -78,9 +85,10 @@ class RightBoundary extends PositionComponent
   @override
   Future<void>? onLoad() async {
     add(RectangleHitbox(
-        position: gameRef.camera.worldBounds!.topRight.toVector2()
+        position: gameRef.camera
+            .screenToWorld(Vector2(gameRef.size.x / 2, -gameRef.size.y / 2))
           ..sub(Vector2(1, 0)),
-        size: Vector2(1, gameRef.camera.worldBounds!.size.width)));
+        size: Vector2(1, gameRef.size.y)));
   }
 }
 
@@ -89,8 +97,9 @@ class BottomBoundary extends PositionComponent
   @override
   Future<void>? onLoad() async {
     add(RectangleHitbox(
-        position: gameRef.camera.worldBounds!.bottomLeft.toVector2()
+        position: gameRef.camera
+            .screenToWorld(Vector2(-gameRef.size.x / 2, gameRef.size.y / 2))
           ..sub(Vector2(0, 1)),
-        size: Vector2(gameRef.camera.worldBounds!.size.height, 1)));
+        size: Vector2(gameRef.size.x, 1)));
   }
 }
