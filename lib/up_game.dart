@@ -35,51 +35,23 @@ class UpGame extends FlameGame with HasDraggables, HasCollisionDetection {
   }
 
   Future<void> loadAssets() async {
-    images.load(
-      'ninja_frog/Idle (32x32).png',
-      key: 'frog_idle',
-    );
-    images.load(
-      'ninja_frog/Run (32x32).png',
-      key: 'frog_run',
-    );
+    Map<String, String> assets = {
+      'frog_idle': 'ninja_frog/Idle (32x32).png',
+      'frog_run': 'ninja_frog/Run (32x32).png',
+      'joystick_position': 'joystick/ControllerPosition.png',
+      'joystick_radius': 'joystick/ControllerRadius.png',
+      'background_sky': 'background/Sky.png',
+      'background_hills1': 'background/Hills_1.png',
+      'background_hills2': 'background/Hills_2.png',
+      'background_mountain1': 'background/Mountain_1.png',
+      'background_mountain2': 'background/Mountain_2.png',
+      'background_mountain3': 'background/Mountain_3.png',
+      'background_mountain4': 'background/Mountain_4.png',
+    };
 
-    images.load(
-      'joystick/ControllerPosition.png',
-      key: 'joystick_position',
-    );
-    images.load(
-      'joystick/ControllerRadius.png',
-      key: 'joystick_radius',
-    );
-    images.load(
-      'background/Sky.png',
-      key: 'background_sky',
-    );
-    images.load(
-      'background/Hills_1.png',
-      key: 'background_hills1',
-    );
-    images.load(
-      'background/Hills_2.png',
-      key: 'background_hills2',
-    );
-    images.load(
-      'background/Mountain_1.png',
-      key: 'background_mountain1',
-    );
-    images.load(
-      'background/Mountain_2.png',
-      key: 'background_mountain2',
-    );
-    images.load(
-      'background/Mountain_3.png',
-      key: 'background_mountain3',
-    );
-    images.load(
-      'background/Mountain_4.png',
-      key: 'background_mountain4',
-    );
+    for (var entry in assets.entries) {
+      images.load(entry.value, key: entry.key);
+    }
 
     return images.ready();
   }
