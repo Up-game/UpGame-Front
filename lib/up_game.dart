@@ -52,6 +52,34 @@ class UpGame extends FlameGame with HasDraggables, HasCollisionDetection {
       'joystick/ControllerRadius.png',
       key: 'joystick_radius',
     );
+    images.load(
+      'background/Sky.png',
+      key: 'background_sky',
+    );
+    images.load(
+      'background/Hills_1.png',
+      key: 'background_hills1',
+    );
+    images.load(
+      'background/Hills_2.png',
+      key: 'background_hills2',
+    );
+    images.load(
+      'background/Mountain_1.png',
+      key: 'background_mountain1',
+    );
+    images.load(
+      'background/Mountain_2.png',
+      key: 'background_mountain2',
+    );
+    images.load(
+      'background/Mountain_3.png',
+      key: 'background_mountain3',
+    );
+    images.load(
+      'background/Mountain_4.png',
+      key: 'background_mountain4',
+    );
 
     return images.ready();
   }

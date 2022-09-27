@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:upgame/player/player_controller.dart';
 
@@ -42,6 +45,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
 
     gameRef.add(FpsTextComponent());
     add(Background(Colors.yellow));
+    add(MyParallaxComponent());
     add(BottomBoundary());
     add(RightBoundary());
     add(LeftBoundary());
@@ -101,5 +105,31 @@ class BottomBoundary extends PositionComponent
       position: Vector2(-400, 0),
       size: Vector2(_height, 1),
     ));
+  }
+}
+
+class MyParallaxComponent extends ParallaxComponent<UpGame> {
+  @override
+  Future<void> onLoad() async {
+    parallax = await gameRef.loadParallax([
+      ParallaxImageData('background_sky'),
+      ParallaxImageData('background_mountain1'),
+      ParallaxImageData('background_mountain2'),
+      ParallaxImageData('background_mountain3'),
+      ParallaxImageData('background_mountain4'),
+      ParallaxImageData('background_hills2'),
+      ParallaxImageData('background_hills1'),
+    ]);
+  }
+
+  @override
+  void onMount() {
+    super.onMount();
+    position = gameRef.projector.unprojectVector(Vector2(0, 0));
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
   }
 }
