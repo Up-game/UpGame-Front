@@ -6,6 +6,7 @@ import 'package:flame/extensions.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:upgame/player/player_controller.dart';
+import 'package:upgame/tile.dart';
 
 import 'player/player.dart';
 import 'up_game.dart';
@@ -49,7 +50,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
     add(BottomBoundary());
     add(RightBoundary());
     add(LeftBoundary());
-
+    add(Tile('grass', size: Vector2(500, 500), position: Vector2(0, -500)));
     add(_player);
     add(Player(position: Vector2(100, 100)));
     gameRef.add(_joystick);

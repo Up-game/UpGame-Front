@@ -9,12 +9,13 @@ import 'package:upgame/up_game.dart';
 import 'package:upgame/utils.dart';
 
 import '../game_page.dart';
+import '../tile.dart';
 
 enum PlayerState { idle, running }
 
 class Player extends PositionComponent
     with HasGameRef<UpGame>, CollisionCallbacks {
-  final double maxSpeed = 10.0;
+  final double maxSpeed = 5.0;
   late final SpriteAnimationGroupComponent<PlayerState> playerAnimation;
   final PlayerController? playerController;
   Vector2 lastPosition;
@@ -38,6 +39,21 @@ class Player extends PositionComponent
     }
     if (other is BottomBoundary) {
       position.y = intersectionPoints.first.y - size.y / 2;
+    }
+    if (other is Tile) {
+      Vector2 offset = Vector2(0, 0);
+      for (final point in intersectionPoints) {
+        final dy = (this.center.y - point.y);
+        final dySign = dy / dy.abs();
+
+        final dx = (this.center.x - point.x);
+        final dxSign = dx / dx.abs();
+        offset = Vector2(
+          dxSign * ((size.x / 2) - dx.abs()),
+          dySign * ((size.y / 2) - dy.abs()),
+        );
+      }
+      position.add(offset);
     }
   }
 
