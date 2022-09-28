@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:upgame/player/player_controller.dart';
@@ -19,7 +20,8 @@ class Player extends PositionComponent
   late final SpriteAnimationGroupComponent<PlayerState> playerAnimation;
   final PlayerController? playerController;
   Vector2 lastPosition;
-  Set<Vector2> _collisions = {};
+  Set<Vector2> _collisions = {}; // for debug only TODO remove
+  Vector2 _closestCollision = Vector2.zero(); // for debug only TODO remove
 
   Player({required Vector2 position, this.playerController})
       : lastPosition = position,
@@ -42,23 +44,29 @@ class Player extends PositionComponent
       position.y = intersectionPoints.first.y - size.y / 2;
     }
     if (other is Tile) {
-      _collisions = intersectionPoints;
-      Vector2 offset = Vector2(0, 0);
-      for (final point in [intersectionPoints.first]) {
-        final dy = (center.y - point.y);
-        final dx = (center.x - point.x);
+      final sortedPoints = intersectionPoints.toList(growable: false)
+        ..sort((a, b) {
+          return a
+              .distanceTo(other.center)
+              .compareTo(b.distanceTo(other.center));
+        });
 
-        if (dx.abs() <= dy.abs()) {
-          offset.x = dx.sign * ((size.x / 2) - dx.abs());
-        } else {
-          offset.y = dy.sign * ((size.y / 2) - dy.abs());
-        }
-        // offset = Vector2(
-        //   dx.sign * ((size.x / 2) - dx.abs()),
-        //   dy.sign * ((size.y / 2) - dy.abs()),
-        // );
-      }
-      position.add(offset);
+      final point = gameRef.collisionDetection
+          .raycast(Ray2(
+            origin: center,
+            direction: (sortedPoints.first - center).normalized(),
+          ))!
+          .intersectionPoint!;
+
+      _collisions = intersectionPoints;
+      _closestCollision = point;
+
+      final dy = (center.y - point.y);
+      final dx = (center.x - point.x);
+      position.add(Vector2(
+        dx.sign * ((size.x / 2) - dx.abs()),
+        dy.sign * ((size.y / 2) - dy.abs()),
+      ));
     }
   }
 
@@ -104,15 +112,33 @@ class Player extends PositionComponent
   }
 
   @override
+  void update(double dt) {
+    super.update(dt);
+    position.y += 0.5;
+  }
+
+  @override
   void render(Canvas canvas) {
     super.render(canvas);
     _collisions.forEach((element) {
       canvas.drawCircle(
         Offset(element.x - position.x + size.x / 2,
             element.y - position.y + size.y / 2),
-        2,
+        4,
         Paint()..color = Colors.white,
       );
     });
+    canvas.drawCircle(
+      Offset(_closestCollision.x - position.x + size.x / 2,
+          _closestCollision.y - position.y + size.y / 2),
+      5,
+      Paint()..color = Colors.red,
+    );
+    canvas.drawLine(
+      (size / 2).toOffset(),
+      Offset(_closestCollision.x - position.x + size.x / 2,
+          _closestCollision.y - position.y + size.y / 2),
+      Paint()..color = Colors.red,
+    );
   }
 }
