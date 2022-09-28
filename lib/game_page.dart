@@ -50,7 +50,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
     add(BottomBoundary());
     add(RightBoundary());
     add(LeftBoundary());
-    add(Tile('grass', size: Vector2(500, 500), position: Vector2(0, -500)));
+    add(Tile('grass', size: Vector2(120, 120), position: Vector2(0, -500)));
     add(_player);
     add(Player(position: Vector2(100, 100)));
     gameRef.add(_joystick);

@@ -19,6 +19,7 @@ class Player extends PositionComponent
   late final SpriteAnimationGroupComponent<PlayerState> playerAnimation;
   final PlayerController? playerController;
   Vector2 lastPosition;
+  Set<Vector2> _collisions = {};
 
   Player({required Vector2 position, this.playerController})
       : lastPosition = position,
@@ -41,17 +42,21 @@ class Player extends PositionComponent
       position.y = intersectionPoints.first.y - size.y / 2;
     }
     if (other is Tile) {
+      _collisions = intersectionPoints;
       Vector2 offset = Vector2(0, 0);
-      for (final point in intersectionPoints) {
-        final dy = (this.center.y - point.y);
-        final dySign = dy / dy.abs();
+      for (final point in [intersectionPoints.first]) {
+        final dy = (center.y - point.y);
+        final dx = (center.x - point.x);
 
-        final dx = (this.center.x - point.x);
-        final dxSign = dx / dx.abs();
-        offset = Vector2(
-          dxSign * ((size.x / 2) - dx.abs()),
-          dySign * ((size.y / 2) - dy.abs()),
-        );
+        if (dx.abs() <= dy.abs()) {
+          offset.x = dx.sign * ((size.x / 2) - dx.abs());
+        } else {
+          offset.y = dy.sign * ((size.y / 2) - dy.abs());
+        }
+        // offset = Vector2(
+        //   dx.sign * ((size.x / 2) - dx.abs()),
+        //   dy.sign * ((size.y / 2) - dy.abs()),
+        // );
       }
       position.add(offset);
     }
@@ -96,5 +101,18 @@ class Player extends PositionComponent
       playerAnimation,
       rectangleHitbox,
     ]);
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    _collisions.forEach((element) {
+      canvas.drawCircle(
+        Offset(element.x - position.x + size.x / 2,
+            element.y - position.y + size.y / 2),
+        2,
+        Paint()..color = Colors.white,
+      );
+    });
   }
 }
