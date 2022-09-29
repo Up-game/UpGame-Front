@@ -20,6 +20,9 @@ class Player extends PositionComponent
   late final SpriteAnimationGroupComponent<PlayerState> playerAnimation;
   final PlayerController? playerController;
   Vector2 lastPosition;
+  Vector2 velocity = Vector2.zero();
+  Vector2 _lastVelocity = Vector2.zero();
+
   Set<Vector2> _collisions = {}; // for debug only TODO remove
   Vector2 _closestCollision = Vector2.zero(); // for debug only TODO remove
 
@@ -44,41 +47,39 @@ class Player extends PositionComponent
       position.y = intersectionPoints.first.y - size.y / 2;
     }
     if (other is Tile) {
-      final sortedPoints = intersectionPoints.toList(growable: false)
-        ..sort((a, b) {
-          return a
-              .distanceTo(other.center)
-              .compareTo(b.distanceTo(other.center));
-        });
+      // final sortedPoints = intersectionPoints.toList(growable: false)
+      //   ..sort((a, b) {
+      //     return a
+      //         .distanceTo(other.center)
+      //         .compareTo(b.distanceTo(other.center));
+      //   });
 
-      final point = gameRef.collisionDetection
-          .raycast(Ray2(
-            origin: center,
-            direction: (sortedPoints.first - center).normalized(),
-          ))!
-          .intersectionPoint!;
+      // final point = gameRef.collisionDetection
+      //     .raycast(Ray2(
+      //       origin: center,
+      //       direction: (sortedPoints.first - center).normalized(),
+      //     ))!
+      //     .intersectionPoint!;
 
-      _collisions = intersectionPoints;
-      _closestCollision = point;
+      final hitbox = RectangleHitbox(position: lastPosition, size: size);
+      final otherHitbox =
+          RectangleHitbox(position: other.position, size: other.size);
 
-      final dy = (center.y - point.y);
-      final dx = (center.x - point.x);
-      position.add(Vector2(
-        dx.sign * ((size.x / 2) - dx.abs()),
-        dy.sign * ((size.y / 2) - dy.abs()),
-      ));
+      hitbox.position.x += _lastVelocity.x;
+
+      if (hitbox.intersections(otherHitbox).isNotEmpty) {
+        hitbox.position.x +=
+            hitbox.intersections(otherHitbox).first.x - _lastVelocity.x;
+      }
+
+      hitbox.position.y += _lastVelocity.y;
+      if (hitbox.intersections(otherHitbox).isNotEmpty) {
+        hitbox.position.y +=
+            hitbox.intersections(otherHitbox).first.y - _lastVelocity.y;
+      }
+
+      position = hitbox.position.clone();
     }
-  }
-
-  @override
-  void onCollisionStart(
-      Set<Vector2> intersectionPoints, PositionComponent other) {
-    super.onCollisionStart(intersectionPoints, other);
-  }
-
-  void move(Vector2 direction, double dt) {
-    lastPosition = position.clone();
-    position.add(direction * maxSpeed * dt);
   }
 
   @override
@@ -114,7 +115,9 @@ class Player extends PositionComponent
   @override
   void update(double dt) {
     super.update(dt);
-    position.y += 0.5;
+    lastPosition = position.clone();
+    _lastVelocity = velocity * maxSpeed * dt;
+    position.add(_lastVelocity);
   }
 
   @override
