@@ -25,6 +25,8 @@ class Player extends PositionComponent
 
   Set<Vector2> _collisions = {}; // for debug only TODO remove
   Vector2 _closestCollision = Vector2.zero(); // for debug only TODO remove
+  Hitbox _hitbox =
+      RectangleHitbox(position: Vector2(0, 0), size: Vector2(0, 0));
 
   Player({required Vector2 position, this.playerController})
       : lastPosition = position,
@@ -46,40 +48,7 @@ class Player extends PositionComponent
     if (other is BottomBoundary) {
       position.y = intersectionPoints.first.y - size.y / 2;
     }
-    if (other is Tile) {
-      // final sortedPoints = intersectionPoints.toList(growable: false)
-      //   ..sort((a, b) {
-      //     return a
-      //         .distanceTo(other.center)
-      //         .compareTo(b.distanceTo(other.center));
-      //   });
-
-      // final point = gameRef.collisionDetection
-      //     .raycast(Ray2(
-      //       origin: center,
-      //       direction: (sortedPoints.first - center).normalized(),
-      //     ))!
-      //     .intersectionPoint!;
-
-      final hitbox = RectangleHitbox(position: lastPosition, size: size);
-      final otherHitbox =
-          RectangleHitbox(position: other.position, size: other.size);
-
-      hitbox.position.x += _lastVelocity.x;
-
-      if (hitbox.intersections(otherHitbox).isNotEmpty) {
-        hitbox.position.x +=
-            hitbox.intersections(otherHitbox).first.x - _lastVelocity.x;
-      }
-
-      hitbox.position.y += _lastVelocity.y;
-      if (hitbox.intersections(otherHitbox).isNotEmpty) {
-        hitbox.position.y +=
-            hitbox.intersections(otherHitbox).first.y - _lastVelocity.y;
-      }
-
-      position = hitbox.position.clone();
-    }
+    if (other is Tile) {}
   }
 
   @override
