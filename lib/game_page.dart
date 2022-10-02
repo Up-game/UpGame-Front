@@ -47,9 +47,9 @@ class GamePage extends Component with HasGameRef<UpGame> {
     gameRef.add(FpsTextComponent());
     add(Background(Colors.yellow));
     add(MyParallaxComponent());
-    add(BottomBoundary());
-    add(RightBoundary());
-    add(LeftBoundary());
+    // add(BottomBoundary());
+    // add(RightBoundary());
+    // add(LeftBoundary());
     add(Tile('grass', size: Vector2(100, 100), position: Vector2(0, -200)));
     add(_player);
     gameRef.add(_joystick);

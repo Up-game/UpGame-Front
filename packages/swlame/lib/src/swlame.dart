@@ -50,27 +50,25 @@ class SwlameCollisionDetection
         }
         final otherCpy = RectangleHitbox(size: other.size + hitbox.size)
           ..center = other.hitboxParent.center;
-        if (other.hitboxParent.runtimeType.toString() == "Tile") {
-          hitbox.hitboxesDebug.add(otherCpy);
+        final hitboxCpy = RectangleHitbox(
+            size: hitbox.size,
+            position: hitbox.hitboxParent.position + hitbox.velocity);
 
-          final ray = Ray2(
-            origin: hitbox.hitboxParent.center,
-            direction: (otherCpy.center - hitbox.hitboxParent.center)
-              ..normalize(),
-          );
+        hitbox.hitboxesDebug.add(otherCpy);
 
-          final rayResult = otherCpy.rayIntersection(ray);
-          final positionAfterMoving =
-              hitbox.hitboxParent.center + hitbox.velocity;
+        final ray = Ray2(
+          origin: hitbox.hitboxParent.center,
+          direction: (otherCpy.center - hitbox.hitboxParent.center)
+            ..normalize(),
+        );
 
-          if (rayResult?.intersectionPoint != null &&
-              hitbox.center.distanceTo(other.center) <=
-                  rayResult!.intersectionPoint!.distanceTo(hitbox.center)) {
-            hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
-            final test = rayResult.normal!
-              ..multiply(hitbox.velocity.clone()..absolute());
-            hitbox.velocity += test * rayResult.distance!;
-          }
+        final rayResult = otherCpy.rayIntersection(ray);
+        log(hitboxCpy.intersections(other).toString());
+        if (rayResult != null && hitboxCpy.intersections(other).isNotEmpty) {
+          hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
+          final test = rayResult.normal!
+            ..multiply(hitbox.velocity.clone()..absolute());
+          hitbox.velocity += test;
         }
       }
     }
