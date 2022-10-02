@@ -44,30 +44,33 @@ class SwlameCollisionDetection
       hitbox.intersectionPointDebug.clear();
       for (final other in broadphase.items) {
         if (other == hitbox ||
-            other.hitboxParent.position == hitbox.hitboxParent.position)
+            other.hitboxParent.position == hitbox.hitboxParent.position ||
+            hitbox.velocity == Vector2.zero()) {
           continue;
+        }
         final otherCpy = RectangleHitbox(size: other.size + hitbox.size)
           ..center = other.hitboxParent.center;
         if (other.hitboxParent.runtimeType.toString() == "Tile") {
           hitbox.hitboxesDebug.add(otherCpy);
-        }
 
-        final ray = Ray2(
-          origin: hitbox.hitboxParent.center,
-          direction: (otherCpy.center - hitbox.hitboxParent.center)
-            ..normalize(),
-        );
+          final ray = Ray2(
+            origin: hitbox.hitboxParent.center,
+            direction: (otherCpy.center - hitbox.hitboxParent.center)
+              ..normalize(),
+          );
 
-        final rayResult = other.rayIntersection(ray);
-        final positionAfterMoving =
-            hitbox.hitboxParent.center + hitbox.velocity;
-        if (rayResult?.intersectionPoint != null &&
-            hitbox.center.distanceTo(positionAfterMoving) >
-                rayResult!.distance!) {
-          hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
-          //hitbox.hitboxParent.center = rayResult.intersectionPoint!;
-        } else {
-          hitbox.hitboxParent.center = positionAfterMoving;
+          final rayResult = otherCpy.rayIntersection(ray);
+          final positionAfterMoving =
+              hitbox.hitboxParent.center + hitbox.velocity;
+
+          if (rayResult?.intersectionPoint != null &&
+              hitbox.center.distanceTo(other.center) <=
+                  rayResult!.intersectionPoint!.distanceTo(hitbox.center)) {
+            hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
+            final test = rayResult.normal!
+              ..multiply(hitbox.velocity.clone()..absolute());
+            hitbox.velocity += test * rayResult.distance!;
+          }
         }
       }
     }

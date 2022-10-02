@@ -19,13 +19,10 @@ class Player extends PositionComponent
   late final SpriteAnimationGroupComponent<PlayerState> playerAnimation;
   final PlayerController? playerController;
   late final MovingRectangleHitbox rectangleHitbox;
-  Vector2 lastPosition;
   Vector2 velocity = Vector2.zero();
-  Vector2 _lastVelocity = Vector2.zero();
 
   Player({required Vector2 position, this.playerController})
-      : lastPosition = position,
-        super(
+      : super(
             size: Vector2.all(100), anchor: Anchor.center, position: position) {
     playerController?.player = this;
   }
@@ -80,10 +77,7 @@ class Player extends PositionComponent
   @override
   void update(double dt) {
     super.update(dt);
-    lastPosition = position.clone();
-    _lastVelocity = velocity * maxSpeed * dt;
-    rectangleHitbox.velocity = _lastVelocity;
-    //position.add(_lastVelocity);
+    position.add(rectangleHitbox.velocity);
   }
 
   @override
