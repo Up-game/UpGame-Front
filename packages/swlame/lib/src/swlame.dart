@@ -1,24 +1,23 @@
+import 'dart:developer';
+
 import 'package:flame/game.dart';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/geometry.dart';
+import 'package:swlame/src/swlame_broadphase.dart';
 
-mixin HasSlameDetection<B extends Broadphase<ShapeHitbox>> on FlameGame {
-  CollisionDetection<ShapeHitbox, B> _collisionDetection =
-      CustomCollisionDetection();
-  CollisionDetection<ShapeHitbox, B> get collisionDetection =>
-      _collisionDetection;
-
-  set collisionDetection(CollisionDetection<ShapeHitbox, B> cd) {
-    cd.addAll(_collisionDetection.items);
-    _collisionDetection = cd;
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-    collisionDetection.run();
-  }
+class MovingRectangleHitbox extends RectangleHitbox {
+  MovingRectangleHitbox({
+    super.position,
+    super.size,
+    super.angle,
+    super.anchor,
+    super.priority,
+    super.isSolid,
+  });
+  Vector2 velocity = Vector2.zero();
+  Set<RectangleHitbox> hitboxesDebug = {};
+  List<Vector2> intersectionPointDebug = [];
 }
 
 /// The default implementation of [CollisionDetection].
@@ -27,18 +26,52 @@ mixin HasSlameDetection<B extends Broadphase<ShapeHitbox>> on FlameGame {
 ///
 /// By default the [Sweep] broadphase is used, this can be configured by
 /// passing in another [Broadphase] to the constructor.
-class CustomCollisionDetection<B extends Broadphase<ShapeHitbox>>
-    extends CollisionDetection<ShapeHitbox, B> {
+class SwlameCollisionDetection
+    extends CollisionDetection<ShapeHitbox, SwlamBroadphase<ShapeHitbox>> {
   final Set<CollisionProspect<ShapeHitbox>> _lastPotentials = {};
 
-  CustomCollisionDetection({B? broadphase})
-      : super(broadphase: broadphase ?? Sweep<ShapeHitbox>() as B);
+  SwlameCollisionDetection()
+      : super(broadphase: SwlamBroadphase<ShapeHitbox>());
 
   /// Run collision detection for the current state of [items].
   @override
   void run() {
     broadphase.update();
     final potentials = broadphase.query();
+
+    for (MovingRectangleHitbox hitbox in broadphase.movingHitboxes) {
+      hitbox.hitboxesDebug.clear();
+      hitbox.intersectionPointDebug.clear();
+      for (final other in broadphase.items) {
+        if (other == hitbox ||
+            other.hitboxParent.position == hitbox.hitboxParent.position)
+          continue;
+        final otherCpy = RectangleHitbox(size: other.size + hitbox.size)
+          ..center = other.hitboxParent.center;
+        if (other.hitboxParent.runtimeType.toString() == "Tile") {
+          hitbox.hitboxesDebug.add(otherCpy);
+        }
+
+        final ray = Ray2(
+          origin: hitbox.hitboxParent.center,
+          direction: (otherCpy.center - hitbox.hitboxParent.center)
+            ..normalize(),
+        );
+
+        final rayResult = other.rayIntersection(ray);
+        final positionAfterMoving =
+            hitbox.hitboxParent.center + hitbox.velocity;
+        if (rayResult?.intersectionPoint != null &&
+            hitbox.center.distanceTo(positionAfterMoving) >
+                rayResult!.distance!) {
+          hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
+          //hitbox.hitboxParent.center = rayResult.intersectionPoint!;
+        } else {
+          hitbox.hitboxParent.center = positionAfterMoving;
+        }
+      }
+    }
+
     potentials.forEach((tuple) {
       final itemA = tuple.a;
       final itemB = tuple.b;

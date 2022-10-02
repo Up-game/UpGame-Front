@@ -3,8 +3,12 @@ import 'package:swlame/swlame.dart';
 
 import 'game_page.dart';
 
-class UpGame extends FlameGame with HasDraggables, HasSlameDetection {
+class UpGame extends FlameGame with HasDraggables, HasCollisionDetection {
   late final RouterComponent router;
+
+  UpGame() {
+    collisionDetection = SwlameCollisionDetection();
+  }
 
   @override
   bool get debugMode => true;
