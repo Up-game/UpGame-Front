@@ -77,7 +77,6 @@ class Player extends PositionComponent
   @override
   void update(double dt) {
     super.update(dt);
-    position.add(rectangleHitbox.velocity);
   }
 
   @override

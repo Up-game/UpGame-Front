@@ -37,6 +37,8 @@ class SwlameCollisionDetection
   /// Run collision detection for the current state of [items].
   @override
   void run() {
+    for (int i = 0; i < 100000000; i++);
+
     broadphase.update();
     final potentials = broadphase.query();
 
@@ -66,24 +68,29 @@ class SwlameCollisionDetection
         final rayResult = otherCpy.rayIntersection(ray);
 
         bool isPointInside(RectangleHitbox box, Vector2 point) {
-          return point.x >= box.position.x &&
-              point.x <= box.position.x + box.size.x &&
-              point.y >= box.position.y &&
-              point.y <= box.position.y + box.size.y;
+          return point.x > box.position.x &&
+              point.x < box.position.x + box.size.x &&
+              point.y > box.position.y &&
+              point.y < box.position.y + box.size.y;
         }
 
         if (rayResult != null &&
-            !isPointInside(otherCpy, hitbox.hitboxParent.center) &&
-            hitboxCpy.aabb.intersectsWithAabb2(other.aabb)) {
+            isPointInside(otherCpy, hitbox.hitboxParent.center)) {
           hitbox.intersectionPointDebug.clear();
           hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
 
-          final diffVector = (hitbox.velocity)..absolute();
-          final Vector2 test = rayResult.normal!..multiply(diffVector);
+          final diffVector = hitbox.velocity.clone()..absolute();
+          Vector2 test = rayResult.normal!.clone()..multiply(diffVector);
+          final vecteurTest =
+              (rayResult.intersectionPoint! - hitbox.hitboxParent.center);
+          // test = test *
+          //     (hitbox.velocity - vecteurTest).length /
+          //     hitbox.velocity.length;
 
           hitbox.normalVectorDebug = test;
           hitbox.velocity += test;
         }
+        hitbox.hitboxParent.position += hitbox.velocity;
       }
     }
 

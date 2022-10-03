@@ -16,9 +16,10 @@ class LocalPlayerController extends PlayerController {
 
   @override
   void update(double dt) {
+    _player.rectangleHitbox.velocity = Vector2(0, 10);
     if (joystick.direction != JoystickDirection.idle) {
       _player.playerAnimation.current = PlayerState.running;
-      _player.rectangleHitbox.velocity += joystick.delta * 0.01;
+      _player.rectangleHitbox.velocity += joystick.delta * 0.001;
 
       if (joystick.delta.x < 0 &&
           !_player.playerAnimation.isFlippedHorizontally) {
