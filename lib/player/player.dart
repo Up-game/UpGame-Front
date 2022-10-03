@@ -69,7 +69,7 @@ class Player extends PositionComponent
       ..collisionType = CollisionType.passive;
 
     addAll([
-      playerAnimation,
+      //playerAnimation,
       rectangleHitbox,
     ]);
   }
@@ -92,7 +92,7 @@ class Player extends PositionComponent
           mhb.height,
         ),
         Paint()
-          ..color = Colors.red
+          ..color = Colors.cyan
           ..style = PaintingStyle.stroke,
       );
     }
@@ -104,5 +104,11 @@ class Player extends PositionComponent
         Paint()..color = Colors.green,
       );
     }
+    canvas.drawLine(
+      Offset(size.x / 2, size.y / 2),
+      Offset(rectangleHitbox.normalVectorDebug.x + size.x / 2,
+          rectangleHitbox.normalVectorDebug.y + size.y / 2),
+      Paint()..color = Colors.purple,
+    );
   }
 }

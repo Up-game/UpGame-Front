@@ -18,6 +18,7 @@ class MovingRectangleHitbox extends RectangleHitbox {
   Vector2 velocity = Vector2.zero();
   Set<RectangleHitbox> hitboxesDebug = {};
   List<Vector2> intersectionPointDebug = [];
+  Vector2 normalVectorDebug = Vector2.zero();
 }
 
 /// The default implementation of [CollisionDetection].
@@ -41,7 +42,7 @@ class SwlameCollisionDetection
 
     for (MovingRectangleHitbox hitbox in broadphase.movingHitboxes) {
       hitbox.hitboxesDebug.clear();
-      hitbox.intersectionPointDebug.clear();
+
       for (final other in broadphase.items) {
         if (other == hitbox ||
             other.hitboxParent.position == hitbox.hitboxParent.position ||
@@ -64,13 +65,24 @@ class SwlameCollisionDetection
 
         final rayResult = otherCpy.rayIntersection(ray);
 
+        bool isPointInside(RectangleHitbox box, Vector2 point) {
+          return point.x >= box.position.x &&
+              point.x <= box.position.x + box.size.x &&
+              point.y >= box.position.y &&
+              point.y <= box.position.y + box.size.y;
+        }
+
         if (rayResult != null &&
+            !isPointInside(otherCpy, hitbox.hitboxParent.center) &&
             hitboxCpy.aabb.intersectsWithAabb2(other.aabb)) {
+          hitbox.intersectionPointDebug.clear();
           hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
-          final test = rayResult.normal!
-            ..dot(hitbox.velocity.clone()..absolute());
-          hitbox.velocity +=
-              test; //* (hitbox.velocity.length - rayResult.distance!);
+
+          final diffVector = (hitbox.velocity)..absolute();
+          final Vector2 test = rayResult.normal!..multiply(diffVector);
+
+          hitbox.normalVectorDebug = test;
+          hitbox.velocity += test;
         }
       }
     }
