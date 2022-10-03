@@ -50,11 +50,11 @@ class SwlameCollisionDetection
         }
         final otherCpy = RectangleHitbox(size: other.size + hitbox.size)
           ..center = other.hitboxParent.center;
-        final hitboxCpy = RectangleHitbox(
-            size: hitbox.size,
-            position: hitbox.hitboxParent.position + hitbox.velocity);
+        final hitboxCpy = RectangleHitbox(size: hitbox.size)
+          ..center = hitbox.hitboxParent.center + hitbox.velocity;
 
         hitbox.hitboxesDebug.add(otherCpy);
+        hitbox.hitboxesDebug.add(hitboxCpy);
 
         final ray = Ray2(
           origin: hitbox.hitboxParent.center,
@@ -63,12 +63,13 @@ class SwlameCollisionDetection
         );
 
         final rayResult = otherCpy.rayIntersection(ray);
-        log(hitboxCpy.intersections(other).toString());
+
         if (rayResult != null && hitboxCpy.intersections(other).isNotEmpty) {
           hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
           final test = rayResult.normal!
             ..multiply(hitbox.velocity.clone()..absolute());
-          hitbox.velocity += test;
+          hitbox.velocity +=
+              test * (hitbox.velocity.clone().length - rayResult.distance!);
         }
       }
     }
