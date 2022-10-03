@@ -64,12 +64,13 @@ class SwlameCollisionDetection
 
         final rayResult = otherCpy.rayIntersection(ray);
 
-        if (rayResult != null && hitboxCpy.intersections(other).isNotEmpty) {
+        if (rayResult != null &&
+            hitboxCpy.aabb.intersectsWithAabb2(other.aabb)) {
           hitbox.intersectionPointDebug.add(rayResult.intersectionPoint!);
           final test = rayResult.normal!
-            ..multiply(hitbox.velocity.clone()..absolute());
+            ..dot(hitbox.velocity.clone()..absolute());
           hitbox.velocity +=
-              test * (hitbox.velocity.clone().length - rayResult.distance!);
+              test; //* (hitbox.velocity.length - rayResult.distance!);
         }
       }
     }
