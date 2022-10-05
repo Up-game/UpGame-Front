@@ -37,8 +37,6 @@ class SwlameCollisionDetection
   /// Run collision detection for the current state of [items].
   @override
   void run() {
-    for (int i = 0; i < 100000000; i++);
-
     broadphase.update();
     final potentials = broadphase.query();
 
