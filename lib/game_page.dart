@@ -17,6 +17,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
   late final JoystickComponent _joystick;
   late final LocalPlayerController _playerController;
   late final Player _player;
+  late final UpGameWorld upGameWorld;
 
   @override
   Future<void>? onLoad() async {
@@ -50,7 +51,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
     // add(BottomBoundary());
     // add(RightBoundary());
     // add(LeftBoundary());
-    add(Tile('grass', size: Vector2(100, 100), position: Vector2(0, -200)));
+    add(upGameWorld = UpGameWorld());
     add(_player);
     gameRef.add(_joystick);
   }
@@ -59,6 +60,14 @@ class GamePage extends Component with HasGameRef<UpGame> {
   void update(double dt) {
     super.update(dt);
     _playerController.update(dt);
+  }
+}
+
+class UpGameWorld extends Component {
+  @override
+  Future<void>? onLoad() {
+    children.register<Tile>();
+    add(Tile('grass', size: Vector2(100, 100), position: Vector2(0, -200)));
   }
 }
 

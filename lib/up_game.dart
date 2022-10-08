@@ -6,10 +6,6 @@ import 'game_page.dart';
 class UpGame extends FlameGame with HasDraggables, HasCollisionDetection {
   late final RouterComponent router;
 
-  UpGame() {
-    collisionDetection = SwlameCollisionDetection();
-  }
-
   @override
   bool get debugMode => true;
 
@@ -21,11 +17,6 @@ class UpGame extends FlameGame with HasDraggables, HasCollisionDetection {
     final ratio = fixedWidth / size.x;
     camera.viewport =
         FixedResolutionViewport(Vector2(fixedWidth, size.y * ratio));
-
-    // final fixedWidth = 300.0;
-    // final ratio = size.x / fixedWidth;
-    // camera.viewport =
-    //     FixedResolutionViewport(Vector2(fixedWidth, size.y * ratio));
 
     add(
       router = RouterComponent(
