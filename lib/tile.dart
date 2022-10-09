@@ -6,6 +6,7 @@ import 'package:upgame/up_game.dart';
 
 class Tile extends PositionComponent with HasGameRef<UpGame> {
   String tileName;
+  Vector2 playerSize = Vector2.all(100);
 
   Tile(this.tileName, {Vector2? size, Vector2? position})
       : super(size: size, position: position);
@@ -24,5 +25,6 @@ class Tile extends PositionComponent with HasGameRef<UpGame> {
 
     add(parallaxComponent);
     add(RectangleHitbox());
+    add(RectangleHitbox(size: size + playerSize, position: -playerSize / 2));
   }
 }

@@ -8,12 +8,14 @@ class RayCasting extends PositionComponent with HasGameRef<UpGame> {
   Vector2 direction;
   double length;
   late Ray2 _ray;
-  final RaycastResult<ShapeHitbox> _result = RaycastResult<ShapeHitbox>();
+  final RaycastResult<ShapeHitbox> result = RaycastResult<ShapeHitbox>();
   final List<ShapeHitbox> _ignoreHitboxes;
+  final void Function(RaycastResult result)? onHit;
 
   RayCasting({
     super.position,
     required this.direction,
+    this.onHit,
     this.length = 1.0,
     List<ShapeHitbox> ignoreHitboxes = const [],
   })  : _ignoreHitboxes = ignoreHitboxes,
@@ -24,10 +26,17 @@ class RayCasting extends PositionComponent with HasGameRef<UpGame> {
   @override
   void update(double dt) {
     super.update(dt);
+  }
+
+  void castRay() {
+    if (direction.length != 1) return;
     _ray.direction = direction;
     _ray.origin = absolutePosition;
     gameRef.collisionDetection
-        .raycast(_ray, ignoreHitboxes: _ignoreHitboxes, out: _result);
+        .raycast(_ray, ignoreHitboxes: _ignoreHitboxes, out: result);
+    // if (_result.intersectionPoint != null && _result.distance! <= length) {
+    //   onHit?.call(_result);
+    // }
   }
 
   @override
@@ -40,9 +49,9 @@ class RayCasting extends PositionComponent with HasGameRef<UpGame> {
     super.renderDebugMode(canvas);
     canvas.drawLine(Offset.zero, (direction * length).toOffset(),
         Paint()..color = const Color.fromARGB(255, 94, 255, 0));
-    if (_result.intersectionPoint != null && _result.distance! <= length) {
+    if (result.intersectionPoint != null && result.distance! <= length) {
       canvas.drawCircle(
-          (_result.intersectionPoint! - absolutePosition).toOffset(),
+          (result.intersectionPoint! - absolutePosition).toOffset(),
           4,
           Paint()..color = Colors.red);
     }

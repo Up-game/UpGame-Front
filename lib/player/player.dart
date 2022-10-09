@@ -22,6 +22,7 @@ class Player extends PositionComponent
   final playerVisual = PlayerVisual();
   late final RayCasting boxCasting;
   Vector2 velocity = Vector2.zero();
+  int counter = 0;
 
   Player({required Vector2 position, this.playerController})
       : super(
@@ -37,14 +38,26 @@ class Player extends PositionComponent
         position: Vector2(50, 50),
         direction: Vector2(0, 1)..normalize(),
         length: 300.0,
+        onHit: onHit,
       )
     ]);
+  }
+
+  void onHit(RaycastResult result) {
+    log('onHit ${counter++}');
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    boxCasting.direction.rotate(0.01);
+    boxCasting.direction = velocity.normalized();
+    boxCasting.length = velocity.length * dt;
+    boxCasting.castRay();
+    if (boxCasting.result.intersectionPoint != null &&
+        boxCasting.result.distance! <= boxCasting.length) {
+      velocity = Vector2.zero();
+      debugPrint('collision');
+    }
     position.add(velocity * dt);
   }
 }

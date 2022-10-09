@@ -67,7 +67,7 @@ class UpGameWorld extends Component {
   @override
   Future<void>? onLoad() {
     children.register<Tile>();
-    add(Tile('grass', size: Vector2(100, 100), position: Vector2(0, -200)));
+    add(Tile('grass', size: Vector2(100, 100), position: Vector2(0, -500)));
   }
 }
 
