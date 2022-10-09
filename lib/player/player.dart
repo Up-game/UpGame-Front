@@ -55,7 +55,8 @@ class Player extends PositionComponent
     boxCasting.castRay();
     if (boxCasting.result.intersectionPoint != null &&
         boxCasting.result.distance! <= boxCasting.length) {
-      velocity = Vector2.zero();
+      velocity =
+          velocity + (boxCasting.result.normal!.clone()..multiply(velocity));
       debugPrint('collision');
     }
     position.add(velocity * dt);
