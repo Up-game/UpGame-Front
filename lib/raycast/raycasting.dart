@@ -26,6 +26,10 @@ class RayCasting extends PositionComponent with HasGameRef<UpGame> {
     super.update(dt);
   }
 
+  bool get hit {
+    return result.intersectionPoint != null && result.distance! <= length;
+  }
+
   void castRay() {
     _ray.direction = direction;
     _ray.origin = absolutePosition;
