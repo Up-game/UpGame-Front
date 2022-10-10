@@ -38,28 +38,26 @@ class Player extends PositionComponent
         position: Vector2(50, 50),
         direction: Vector2(0, 1)..normalize(),
         length: 300.0,
-        onHit: onHit,
       )
     ]);
-  }
-
-  void onHit(RaycastResult result) {
-    log('onHit ${counter++}');
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    boxCasting.direction = velocity.normalized();
-    boxCasting.length = velocity.length * dt;
-    boxCasting.castRay();
-    if (boxCasting.result.intersectionPoint != null &&
-        boxCasting.result.distance! <= boxCasting.length) {
-      velocity =
-          velocity + (boxCasting.result.normal!.clone()..multiply(velocity));
-      debugPrint('collision');
+    if (velocity.length > 0) {
+      boxCasting.direction = velocity.normalized();
+      boxCasting.length = velocity.length * dt;
+
+      boxCasting.castRay();
+      if (boxCasting.result.intersectionPoint != null &&
+          boxCasting.result.distance! <= boxCasting.length) {
+        velocity =
+            velocity + (boxCasting.result.normal!.clone()..multiply(velocity));
+        debugPrint('collision');
+      }
+      position.add(velocity * dt);
     }
-    position.add(velocity * dt);
   }
 }
 

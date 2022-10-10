@@ -10,12 +10,10 @@ class RayCasting extends PositionComponent with HasGameRef<UpGame> {
   late Ray2 _ray;
   final RaycastResult<ShapeHitbox> result = RaycastResult<ShapeHitbox>();
   final List<ShapeHitbox> _ignoreHitboxes;
-  final void Function(RaycastResult result)? onHit;
 
   RayCasting({
     super.position,
     required this.direction,
-    this.onHit,
     this.length = 1.0,
     List<ShapeHitbox> ignoreHitboxes = const [],
   })  : _ignoreHitboxes = ignoreHitboxes,
@@ -29,14 +27,10 @@ class RayCasting extends PositionComponent with HasGameRef<UpGame> {
   }
 
   void castRay() {
-    if (direction.length != 1) return;
     _ray.direction = direction;
     _ray.origin = absolutePosition;
     gameRef.collisionDetection
         .raycast(_ray, ignoreHitboxes: _ignoreHitboxes, out: result);
-    // if (_result.intersectionPoint != null && _result.distance! <= length) {
-    //   onHit?.call(_result);
-    // }
   }
 
   @override
