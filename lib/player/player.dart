@@ -54,7 +54,8 @@ class Player extends PositionComponent
             (velocity.length - rayCasting.result.distance!) / velocity.length;
         final velocityCorr =
             (velocity.clone()..multiply(rayCasting.result.normal!)) * diff;
-        velocity = velocity + velocityCorr;
+        velocity =
+            velocity + velocityCorr + rayCasting.result.normal! * 0.0000000001;
       }
       position.add(velocity);
     }
