@@ -16,7 +16,7 @@ enum PlayerState { idle, running }
 
 class Player extends PositionComponent
     with HasGameRef<UpGame>, CollisionCallbacks {
-  final double maxSpeed = 1.0;
+  final double maxSpeed = 0.5;
   final PlayerController? playerController;
   final playerVisual = PlayerVisual();
   late final RayCasting rayCasting;
@@ -52,10 +52,12 @@ class Player extends PositionComponent
       if (rayCasting.hit) {
         double diff =
             (velocity.length - rayCasting.result.distance!) / velocity.length;
-        final velocityCorr =
-            (velocity.clone()..multiply(rayCasting.result.normal!)) * diff;
+        final velocityCorr = (velocity.clone()
+              ..absolute()
+              ..multiply(rayCasting.result.normal!)) *
+            diff;
         velocity =
-            velocity + velocityCorr + rayCasting.result.normal! * 0.0000000001;
+            velocity + velocityCorr + rayCasting.result.normal! * 0.000000001;
       }
       position.add(velocity);
     }
