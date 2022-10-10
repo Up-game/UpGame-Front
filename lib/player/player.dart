@@ -4,7 +4,6 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
-import 'package:swlame/swlame.dart';
 import 'package:upgame/player/player_controller.dart';
 import 'package:upgame/raycast/box_casting.dart';
 import 'package:upgame/raycast/raycasting.dart';
@@ -20,7 +19,7 @@ class Player extends PositionComponent
   final double maxSpeed = 1.0;
   final PlayerController? playerController;
   final playerVisual = PlayerVisual();
-  late final RayCasting boxCasting;
+  late final RayCasting rayCasting;
   Vector2 velocity = Vector2.zero();
   int counter = 0;
 
@@ -34,7 +33,7 @@ class Player extends PositionComponent
   Future<void>? onLoad() async {
     addAll([
       playerVisual,
-      boxCasting = RayCasting(
+      rayCasting = RayCasting(
         position: Vector2(50, 50),
         direction: Vector2(0, 1)..normalize(),
         length: 300.0,
@@ -46,19 +45,16 @@ class Player extends PositionComponent
   void update(double dt) {
     super.update(dt);
     if (velocity.length > 0) {
-      boxCasting.direction = velocity.normalized();
-      boxCasting.length = velocity.length;
+      rayCasting.direction = velocity.normalized();
+      rayCasting.length = velocity.length;
 
-      boxCasting.castRay();
-      if (boxCasting.hit) {
+      rayCasting.castRay();
+      if (rayCasting.hit) {
         double diff =
-            (velocity.length - boxCasting.result.distance!) / velocity.length;
+            (velocity.length - rayCasting.result.distance!) / velocity.length;
         final velocityCorr =
-            (velocity.clone()..multiply(boxCasting.result.normal!)) * diff;
+            (velocity.clone()..multiply(rayCasting.result.normal!)) * diff;
         velocity = velocity + velocityCorr;
-      }
-      if (boxCasting.result.isInsideHitbox) {
-        debugPrint("coucou");
       }
       position.add(velocity);
     }

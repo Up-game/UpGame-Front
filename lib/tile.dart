@@ -24,7 +24,7 @@ class Tile extends PositionComponent with HasGameRef<UpGame> {
     );
 
     add(parallaxComponent);
-    add(RectangleHitbox());
+    //add(RectangleHitbox());
     add(RectangleHitbox(
         size: size + playerSize, position: -playerSize / 2, isSolid: true));
   }

@@ -1,5 +1,4 @@
 import 'package:flame/game.dart';
-import 'package:swlame/swlame.dart';
 
 import 'game_page.dart';
 
