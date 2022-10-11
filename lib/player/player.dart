@@ -45,20 +45,27 @@ class Player extends PositionComponent
   void update(double dt) {
     super.update(dt);
     if (velocity.length > 0) {
-      rayCasting.direction = velocity.normalized();
-      rayCasting.length = velocity.length;
+      List<ShapeHitbox> ignoreHitboxes = [];
 
-      rayCasting.castRay();
-      if (rayCasting.hit) {
-        double diff =
-            (velocity.length - rayCasting.result.distance!) / velocity.length;
-        final velocityCorr = (velocity.clone()
-              ..absolute()
-              ..multiply(rayCasting.result.normal!)) *
-            diff;
-        velocity =
-            velocity + velocityCorr + rayCasting.result.normal! * 0.000000001;
+      while (true) {
+        rayCasting.direction = velocity.normalized();
+        rayCasting.length = velocity.length;
+        rayCasting.castRay(ignoredHitboxes: ignoreHitboxes);
+        if (rayCasting.hit) {
+          double diff =
+              (velocity.length - rayCasting.result.distance!) / velocity.length;
+          final velocityCorr = (velocity.clone()
+                ..absolute()
+                ..multiply(rayCasting.result.normal!)) *
+              diff;
+          velocity =
+              velocity + velocityCorr + rayCasting.result.normal! * 0.000000001;
+          ignoreHitboxes.add(rayCasting.result.hitbox!);
+        } else {
+          break;
+        }
       }
+
       position.add(velocity);
     }
   }

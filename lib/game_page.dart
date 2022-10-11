@@ -69,6 +69,8 @@ class UpGameWorld extends Component {
     children.register<Tile>();
     add(Tile('grass', size: Vector2(800, 100), position: Vector2(-400, -100)));
     add(Tile('grass', size: Vector2(100, 800), position: Vector2(-400, -800)));
+    add(Tile('grass', size: Vector2(100, 800), position: Vector2(300, -800)));
+    add(Tile('grass', size: Vector2(200, 50), position: Vector2(-1, -290)));
   }
 }
 
