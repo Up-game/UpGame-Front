@@ -6,6 +6,7 @@ import 'package:flame/extensions.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:upgame/player/player_controller.dart';
+import 'package:upgame/tile.dart';
 
 import 'player/player.dart';
 import 'up_game.dart';
@@ -16,6 +17,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
   late final JoystickComponent _joystick;
   late final LocalPlayerController _playerController;
   late final Player _player;
+  late final UpGameWorld upGameWorld;
 
   @override
   Future<void>? onLoad() async {
@@ -33,7 +35,7 @@ class GamePage extends Component with HasGameRef<UpGame> {
 
     _playerController = LocalPlayerController(_joystick);
     _player = Player(
-      position: Vector2(0, 0),
+      position: Vector2(50, -750),
       playerController: _playerController,
     );
 
@@ -46,12 +48,11 @@ class GamePage extends Component with HasGameRef<UpGame> {
     gameRef.add(FpsTextComponent());
     add(Background(Colors.yellow));
     add(MyParallaxComponent());
-    add(BottomBoundary());
-    add(RightBoundary());
-    add(LeftBoundary());
-
+    // add(BottomBoundary());
+    // add(RightBoundary());
+    // add(LeftBoundary());
+    add(upGameWorld = UpGameWorld());
     add(_player);
-    add(Player(position: Vector2(100, 100)));
     gameRef.add(_joystick);
   }
 
@@ -59,6 +60,17 @@ class GamePage extends Component with HasGameRef<UpGame> {
   void update(double dt) {
     super.update(dt);
     _playerController.update(dt);
+  }
+}
+
+class UpGameWorld extends Component {
+  @override
+  Future<void>? onLoad() {
+    children.register<Tile>();
+    add(Tile('grass', size: Vector2(800, 100), position: Vector2(-400, -100)));
+    add(Tile('grass', size: Vector2(100, 800), position: Vector2(-400, -800)));
+    add(Tile('grass', size: Vector2(100, 800), position: Vector2(300, -800)));
+    add(Tile('grass', size: Vector2(200, 50), position: Vector2(-1, -290)));
   }
 }
 
