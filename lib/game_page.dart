@@ -3,6 +3,7 @@ import 'package:flame/extensions.dart';
 import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
+import 'package:upgame/button.dart';
 import 'package:upgame/player/player_controller.dart';
 import 'package:upgame/tile.dart';
 
@@ -13,8 +14,8 @@ const worldBoundary = Rect.fromLTRB(-400, -800, 400, 0);
 
 class GamePage extends Component with HasGameRef<UpGame> {
   late final JoystickComponent _joystick;
-  late final HudButtonComponent _hudButtonA;
-  late final HudButtonComponent _hudButtonB;
+  late final Button _hudButtonA;
+  late final Button _hudButtonB;
   late final LocalPlayerController _playerController;
   late final Player _player;
   late final UpGameWorld upGameWorld;
@@ -33,31 +34,20 @@ class GamePage extends Component with HasGameRef<UpGame> {
       margin: const EdgeInsets.only(left: 40, bottom: 40),
     );
 
-    _hudButtonA = HudButtonComponent(
-      button: SpriteComponent(
-        sprite: Sprite(gameRef.images.fromCache('button_a')),
-        size: Vector2.all(100),
-      ),
-      buttonDown: SpriteComponent(
-        sprite: Sprite(gameRef.images.fromCache('button_a')),
-        size: Vector2.all(100),
-      ),
+    _hudButtonA = Button(
+      sprite: Sprite(gameRef.images.fromCache('button_a')),
+      size: Vector2.all(100),
       margin: const EdgeInsets.only(right: 120, bottom: 40),
     );
 
-    _hudButtonB = HudButtonComponent(
-      button: SpriteComponent(
-        sprite: Sprite(gameRef.images.fromCache('button_b')),
-        size: Vector2.all(80),
-      ),
-      buttonDown: SpriteComponent(
-        sprite: Sprite(gameRef.images.fromCache('button_b')),
-        size: Vector2.all(80),
-      ),
+    _hudButtonB = Button(
+      sprite: Sprite(gameRef.images.fromCache('button_b')),
+      size: Vector2.all(80),
       margin: const EdgeInsets.only(right: 40, bottom: 100),
     );
 
-    _playerController = LocalPlayerController(_joystick);
+    _playerController =
+        LocalPlayerController(_joystick, _hudButtonA, _hudButtonB);
     _player = Player(
       position: Vector2(50, -750),
       playerController: _playerController,
