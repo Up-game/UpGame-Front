@@ -10,7 +10,7 @@ enum PlayerState { idle, running }
 class Player extends PositionComponent
     with HasGameRef<UpGame>, DynamicBody<UpGame> {
   final PlayerController? playerController;
-  final playerVisual = PlayerVisual();
+  late final playerVisual;
   late final RayCasting rayCasting;
   int counter = 0;
 
@@ -23,9 +23,8 @@ class Player extends PositionComponent
   @override
   Future<void>? onLoad() async {
     super.onLoad();
-    addAll([
-      playerVisual,
-    ]);
+    playerVisual = PlayerVisual(size: size);
+    add(playerVisual);
   }
 
   @override
@@ -38,6 +37,8 @@ class Player extends PositionComponent
 
 class PlayerVisual extends PositionComponent with HasGameRef<UpGame> {
   late final SpriteAnimationGroupComponent<PlayerState> playerAnimation;
+
+  PlayerVisual({Vector2? size}) : super(size: size);
 
   @override
   Future<void>? onLoad() async {
@@ -57,7 +58,7 @@ class PlayerVisual extends PositionComponent with HasGameRef<UpGame> {
         PlayerState.idle: idleAnimation,
         PlayerState.running: runAnimation,
       },
-      current: PlayerState.running,
+      current: PlayerState.idle,
       size: size,
     );
 
