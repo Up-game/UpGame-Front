@@ -10,9 +10,15 @@ enum PlayerState { idle, running }
 class Player extends PositionComponent
     with HasGameRef<UpGame>, DynamicBody<UpGame> {
   final PlayerController? playerController;
-  late final playerVisual;
-  late final RayCasting rayCasting;
+  late final PlayerVisual playerVisual;
+  late final RayCasting groundRay;
+  late final RayCasting leftRay;
+  late final RayCasting rightRay;
   int counter = 0;
+
+  bool get isGrounded => groundRay.hit;
+  bool get isAgainstLeftWall => leftRay.hit;
+  bool get isAgainstRightWall => rightRay.hit;
 
   Player({required Vector2 position, this.playerController})
       : super(
@@ -24,12 +30,34 @@ class Player extends PositionComponent
   Future<void>? onLoad() async {
     super.onLoad();
     playerVisual = PlayerVisual(size: size);
+    groundRay = RayCasting(
+      position: Vector2(50, 90),
+      direction: Vector2(0, 1),
+      length: 20,
+    );
+    leftRay = RayCasting(
+      position: Vector2(10, 50),
+      direction: Vector2(-1, 0),
+      length: 20,
+    );
+    rightRay = RayCasting(
+      position: Vector2(90, 50),
+      direction: Vector2(1, 0),
+      length: 20,
+    );
+
     add(playerVisual);
+    add(groundRay);
+    add(leftRay);
+    add(rightRay);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
+    groundRay.castRay();
+    leftRay.castRay();
+    rightRay.castRay();
     playerController?.update(dt);
     resolveCollision();
   }

@@ -1,3 +1,4 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,6 @@ class Tile extends PositionComponent
     );
 
     add(parallaxComponent);
-    //add(RectangleHitbox());
-    // add(RectangleHitbox(
-    //     size: size + playerSize, position: -playerSize / 2, isSolid: true));
+    add(RectangleHitbox());
   }
 }
