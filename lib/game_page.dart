@@ -1,4 +1,3 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/parallax.dart';
@@ -41,23 +40,11 @@ class GamePage extends Component with HasGameRef<UpGame> {
       Vector2(0, -400 + 400 - gameRef.size.y / 2),
     );
 
-    //gameRef.camera.followComponent(_player, worldBounds: worldBoundary);
-
     gameRef.add(FpsTextComponent());
-    add(Background(Colors.yellow));
     add(MyParallaxComponent());
-    // add(BottomBoundary());
-    // add(RightBoundary());
-    // add(LeftBoundary());
     add(upGameWorld = UpGameWorld());
-    add(_player);
     gameRef.add(_joystick);
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-    _playerController.update(dt);
+    add(_player);
   }
 }
 
@@ -82,42 +69,6 @@ class Background extends Component {
   @override
   void render(Canvas canvas) {
     canvas.drawColor(color, BlendMode.srcATop);
-  }
-}
-
-class LeftBoundary extends PositionComponent
-    with CollisionCallbacks, HasGameRef<UpGame> {
-  final double _height = 800;
-  @override
-  Future<void>? onLoad() async {
-    add(RectangleHitbox(
-      position: Vector2(-400, -_height),
-      size: Vector2(1, _height),
-    ));
-  }
-}
-
-class RightBoundary extends PositionComponent
-    with CollisionCallbacks, HasGameRef<UpGame> {
-  final double _height = 800;
-  @override
-  Future<void>? onLoad() async {
-    add(RectangleHitbox(
-      position: Vector2(400, -_height),
-      size: Vector2(1, _height),
-    ));
-  }
-}
-
-class BottomBoundary extends PositionComponent
-    with CollisionCallbacks, HasGameRef<UpGame> {
-  final double _height = 800;
-  @override
-  Future<void>? onLoad() async {
-    add(RectangleHitbox(
-      position: Vector2(-400, 0),
-      size: Vector2(_height, 1),
-    ));
   }
 }
 

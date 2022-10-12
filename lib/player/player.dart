@@ -9,7 +9,6 @@ enum PlayerState { idle, running }
 
 class Player extends PositionComponent
     with HasGameRef<UpGame>, DynamicBody<UpGame> {
-  final double maxSpeed = 0.5;
   final PlayerController? playerController;
   final playerVisual = PlayerVisual();
   late final RayCasting rayCasting;
@@ -32,6 +31,7 @@ class Player extends PositionComponent
   @override
   void update(double dt) {
     super.update(dt);
+    playerController?.update(dt);
     resolveCollision();
   }
 }
