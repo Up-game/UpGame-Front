@@ -1,8 +1,10 @@
 import 'package:flame/game.dart';
+import 'package:swlame/swlame.dart';
 
 import 'game_page.dart';
 
-class UpGame extends FlameGame with HasDraggables, HasCollisionDetection {
+class UpGame extends FlameGame
+    with Swlame, HasDraggables, HasCollisionDetection {
   late final RouterComponent router;
 
   @override
