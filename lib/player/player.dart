@@ -21,7 +21,6 @@ class Player extends PositionComponent
   final PlayerController? playerController;
   final playerVisual = PlayerVisual();
   late final RayCasting rayCasting;
-  // Vector2 velocity = Vector2.zero();
   int counter = 0;
 
   Player({required Vector2 position, this.playerController})
@@ -34,11 +33,6 @@ class Player extends PositionComponent
   Future<void>? onLoad() async {
     addAll([
       playerVisual,
-      // rayCasting = RayCasting(
-      //   position: Vector2(50, 50),
-      //   direction: Vector2(0, 1)..normalize(),
-      //   length: 300.0,
-      // )
     ]);
   }
 
@@ -46,30 +40,6 @@ class Player extends PositionComponent
   void update(double dt) {
     super.update(dt);
     resolveCollision();
-    // if (velocity.length > 0) {
-    //   List<ShapeHitbox> ignoreHitboxes = [];
-
-    //   while (true) {
-    //     rayCasting.direction = velocity.normalized();
-    //     rayCasting.length = velocity.length;
-    //     rayCasting.castRay(ignoredHitboxes: ignoreHitboxes);
-    //     if (rayCasting.hit) {
-    //       double diff =
-    //           (velocity.length - rayCasting.result.distance!) / velocity.length;
-    //       final velocityCorr = (velocity.clone()
-    //             ..absolute()
-    //             ..multiply(rayCasting.result.normal!)) *
-    //           diff;
-    //       velocity =
-    //           velocity + velocityCorr + rayCasting.result.normal! * 0.000000001;
-    //       ignoreHitboxes.add(rayCasting.result.hitbox!);
-    //     } else {
-    //       break;
-    //     }
-    //   }
-
-    //   position.add(velocity);
-    // }
   }
 }
 
