@@ -1,4 +1,3 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +15,6 @@ class Tile extends PositionComponent
   @override
   Future<void>? onLoad() async {
     super.onLoad();
-    final grassImage = gameRef.images.fromCache(tileName);
-    final grassSprite = Sprite(grassImage);
 
     final parallaxComponent = await ParallaxComponent.load(
       [ParallaxImageData('grass')],

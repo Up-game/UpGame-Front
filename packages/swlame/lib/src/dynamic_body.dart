@@ -1,6 +1,5 @@
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/geometry.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:swlame/swlame.dart';
 import 'swlame.dart';

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
@@ -72,6 +70,8 @@ class UpGameWorld extends Component {
     add(Tile('grass', size: Vector2(100, 800), position: Vector2(-400, -800)));
     add(Tile('grass', size: Vector2(100, 800), position: Vector2(300, -800)));
     add(Tile('grass', size: Vector2(200, 1), position: Vector2(-1, -290)));
+
+    return super.onLoad();
   }
 }
 

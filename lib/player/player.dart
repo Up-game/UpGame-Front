@@ -1,17 +1,9 @@
-import 'dart:developer';
-
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
-import 'package:flutter/material.dart';
 import 'package:swlame/swlame.dart';
 import 'package:upgame/player/player_controller.dart';
-import 'package:upgame/raycast/box_casting.dart';
 import 'package:upgame/raycast/raycasting.dart';
 import 'package:upgame/up_game.dart';
-
-import '../game_page.dart';
-import '../tile.dart';
 
 enum PlayerState { idle, running }
 
@@ -31,6 +23,7 @@ class Player extends PositionComponent
 
   @override
   Future<void>? onLoad() async {
+    super.onLoad();
     addAll([
       playerVisual,
     ]);
