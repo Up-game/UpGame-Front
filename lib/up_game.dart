@@ -4,7 +4,7 @@ import 'package:swlame/swlame.dart';
 import 'game_page.dart';
 
 class UpGame extends FlameGame
-    with Swlame, HasDraggables, HasCollisionDetection {
+    with Swlame, HasDraggables, HasCollisionDetection, HasTappables {
   late final RouterComponent router;
 
   @override
@@ -35,6 +35,8 @@ class UpGame extends FlameGame
       'frog_run': 'ninja_frog/Run (32x32).png',
       'joystick_position': 'joystick/ControllerPosition.png',
       'joystick_radius': 'joystick/ControllerRadius.png',
+      'button_a': 'joystick/button_a.png',
+      'button_b': 'joystick/button_b.png',
       'background_sky': 'background/Sky.png',
       'background_hills1': 'background/Hills_1.png',
       'background_hills2': 'background/Hills_2.png',

@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:upgame/player/player_controller.dart';
@@ -12,6 +13,8 @@ const worldBoundary = Rect.fromLTRB(-400, -800, 400, 0);
 
 class GamePage extends Component with HasGameRef<UpGame> {
   late final JoystickComponent _joystick;
+  late final HudButtonComponent _hudButtonA;
+  late final HudButtonComponent _hudButtonB;
   late final LocalPlayerController _playerController;
   late final Player _player;
   late final UpGameWorld upGameWorld;
@@ -21,13 +24,37 @@ class GamePage extends Component with HasGameRef<UpGame> {
     _joystick = JoystickComponent(
       knob: SpriteComponent(
         sprite: Sprite(gameRef.images.fromCache('joystick_position')),
-        size: Vector2.all(70),
+        size: Vector2.all(100),
       ),
       background: SpriteComponent(
         sprite: Sprite(gameRef.images.fromCache('joystick_radius')),
-        size: Vector2.all(100),
+        size: Vector2.all(130),
       ),
       margin: const EdgeInsets.only(left: 40, bottom: 40),
+    );
+
+    _hudButtonA = HudButtonComponent(
+      button: SpriteComponent(
+        sprite: Sprite(gameRef.images.fromCache('button_a')),
+        size: Vector2.all(100),
+      ),
+      buttonDown: SpriteComponent(
+        sprite: Sprite(gameRef.images.fromCache('button_a')),
+        size: Vector2.all(100),
+      ),
+      margin: const EdgeInsets.only(right: 120, bottom: 40),
+    );
+
+    _hudButtonB = HudButtonComponent(
+      button: SpriteComponent(
+        sprite: Sprite(gameRef.images.fromCache('button_b')),
+        size: Vector2.all(80),
+      ),
+      buttonDown: SpriteComponent(
+        sprite: Sprite(gameRef.images.fromCache('button_b')),
+        size: Vector2.all(80),
+      ),
+      margin: const EdgeInsets.only(right: 40, bottom: 100),
     );
 
     _playerController = LocalPlayerController(_joystick);
@@ -44,6 +71,8 @@ class GamePage extends Component with HasGameRef<UpGame> {
     add(MyParallaxComponent());
     add(upGameWorld = UpGameWorld());
     gameRef.add(_joystick);
+    gameRef.add(_hudButtonA);
+    gameRef.add(_hudButtonB);
     add(_player);
   }
 }
