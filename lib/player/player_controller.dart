@@ -13,12 +13,20 @@ abstract class PlayerController {
 }
 
 class LocalPlayerController extends PlayerController {
+  final double gravity = 40;
+  final double maxGravity = 10;
+  final double jumpForce = 70;
+  final double jumpDrag = 30;
+
   final JoystickComponent joystick;
   final Button buttonA;
   final Button buttonB;
 
   final double maxSpeed = 10;
-  static const double GRAVITY = 0.5;
+  bool isJumpPressed = false;
+  double maxAirTime = 0.3;
+  double minAirTime = 0.15;
+  double airTime = 0;
 
   LocalPlayerController(this.joystick, this.buttonA, this.buttonB) {
     buttonA.onPressed = jumpPressed;
@@ -45,14 +53,32 @@ class LocalPlayerController extends PlayerController {
       _player.velocity.x = 0;
     }
 
-    _player.velocity.y += GRAVITY;
+    if (isJumpPressed && airTime <= maxAirTime ||
+        airTime <= minAirTime && airTime != 0) {
+      airTime += dt;
+      _player.velocity.y -=
+          (jumpForce - ((1 + airTime * airTime) * jumpDrag)) * dt;
+    } else {
+      isJumpPressed = false;
+      _player.velocity.y += gravity * dt;
+      _player.velocity.y = _player.velocity.y.clamp(0, maxGravity);
+    }
+
+    if (_player.isGrounded && airTime > minAirTime) {
+      airTime = 0;
+    }
   }
 
   void jumpPressed() {
+    if (_player.isGrounded) {
+      isJumpPressed = true;
+    }
+
     debugPrint("jump pressed");
   }
 
   void jumpReleased() {
+    isJumpPressed = false;
     debugPrint("jump released");
   }
 
