@@ -11,6 +11,7 @@ abstract class PlayerController {
 
 class LocalPlayerController extends PlayerController {
   final JoystickComponent joystick;
+  final double maxSpeed = 10;
 
   LocalPlayerController(this.joystick);
 
@@ -18,7 +19,7 @@ class LocalPlayerController extends PlayerController {
   void update(double dt) {
     if (joystick.direction != JoystickDirection.idle) {
       _player.playerVisual.playerAnimation.current = PlayerState.running;
-      _player.velocity = joystick.delta * _player.maxSpeed;
+      _player.velocity.setFrom(joystick.delta * maxSpeed * dt);
 
       if (joystick.delta.x < 0 &&
           !_player.playerVisual.playerAnimation.isFlippedHorizontally) {
@@ -29,7 +30,7 @@ class LocalPlayerController extends PlayerController {
       }
     } else {
       _player.playerVisual.playerAnimation.current = PlayerState.idle;
-      _player.velocity = Vector2.zero();
+      _player.velocity.setFrom(Vector2.zero());
     }
   }
 }

@@ -21,11 +21,6 @@ class RayCasting extends PositionComponent with HasGameRef<UpGame> {
     _ray = Ray2(origin: absolutePosition, direction: direction);
   }
 
-  @override
-  void update(double dt) {
-    super.update(dt);
-  }
-
   bool get hit {
     return result.intersectionPoint != null && result.distance! <= length;
   }
@@ -35,11 +30,6 @@ class RayCasting extends PositionComponent with HasGameRef<UpGame> {
     _ray.origin = absolutePosition;
     gameRef.collisionDetection.raycast(_ray,
         ignoreHitboxes: _ignoreHitboxes + ignoredHitboxes, out: result);
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
   }
 
   @override

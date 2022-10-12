@@ -1,26 +1,17 @@
-import 'dart:developer';
-
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
-import 'package:flutter/material.dart';
+import 'package:swlame/swlame.dart';
 import 'package:upgame/player/player_controller.dart';
-import 'package:upgame/raycast/box_casting.dart';
 import 'package:upgame/raycast/raycasting.dart';
 import 'package:upgame/up_game.dart';
-
-import '../game_page.dart';
-import '../tile.dart';
 
 enum PlayerState { idle, running }
 
 class Player extends PositionComponent
-    with HasGameRef<UpGame>, CollisionCallbacks {
-  final double maxSpeed = 0.5;
+    with HasGameRef<UpGame>, DynamicBody<UpGame> {
   final PlayerController? playerController;
-  final playerVisual = PlayerVisual();
+  late final playerVisual;
   late final RayCasting rayCasting;
-  Vector2 velocity = Vector2.zero();
   int counter = 0;
 
   Player({required Vector2 position, this.playerController})
@@ -31,48 +22,23 @@ class Player extends PositionComponent
 
   @override
   Future<void>? onLoad() async {
-    addAll([
-      playerVisual,
-      rayCasting = RayCasting(
-        position: Vector2(50, 50),
-        direction: Vector2(0, 1)..normalize(),
-        length: 300.0,
-      )
-    ]);
+    super.onLoad();
+    playerVisual = PlayerVisual(size: size);
+    add(playerVisual);
   }
 
   @override
   void update(double dt) {
     super.update(dt);
-    if (velocity.length > 0) {
-      List<ShapeHitbox> ignoreHitboxes = [];
-
-      while (true) {
-        rayCasting.direction = velocity.normalized();
-        rayCasting.length = velocity.length;
-        rayCasting.castRay(ignoredHitboxes: ignoreHitboxes);
-        if (rayCasting.hit) {
-          double diff =
-              (velocity.length - rayCasting.result.distance!) / velocity.length;
-          final velocityCorr = (velocity.clone()
-                ..absolute()
-                ..multiply(rayCasting.result.normal!)) *
-              diff;
-          velocity =
-              velocity + velocityCorr + rayCasting.result.normal! * 0.000000001;
-          ignoreHitboxes.add(rayCasting.result.hitbox!);
-        } else {
-          break;
-        }
-      }
-
-      position.add(velocity);
-    }
+    playerController?.update(dt);
+    resolveCollision();
   }
 }
 
 class PlayerVisual extends PositionComponent with HasGameRef<UpGame> {
   late final SpriteAnimationGroupComponent<PlayerState> playerAnimation;
+
+  PlayerVisual({Vector2? size}) : super(size: size);
 
   @override
   Future<void>? onLoad() async {
@@ -92,7 +58,7 @@ class PlayerVisual extends PositionComponent with HasGameRef<UpGame> {
         PlayerState.idle: idleAnimation,
         PlayerState.running: runAnimation,
       },
-      current: PlayerState.running,
+      current: PlayerState.idle,
       size: size,
     );
 

@@ -27,8 +27,10 @@ class BoxCasting extends PositionComponent with HasGameRef<UpGame> {
       size: boxSize,
       anchor: Anchor.center,
     );
-    rect.debugColor = Color.fromARGB(255, 94, 255, 0);
+    rect.debugColor = const Color.fromARGB(255, 94, 255, 0);
     add(rect);
+
+    return super.onLoad();
   }
 
   @override
@@ -45,7 +47,7 @@ class BoxCasting extends PositionComponent with HasGameRef<UpGame> {
     canvas.drawLine(
       Offset.zero,
       (direction * length).toOffset(),
-      Paint()..color = Color.fromARGB(255, 94, 255, 0),
+      Paint()..color = const Color.fromARGB(255, 94, 255, 0),
     );
   }
 }

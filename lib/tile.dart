@@ -1,10 +1,11 @@
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
+import 'package:swlame/swlame.dart';
 import 'package:upgame/up_game.dart';
 
-class Tile extends PositionComponent with HasGameRef<UpGame> {
+class Tile extends PositionComponent
+    with HasGameRef<UpGame>, StaticBody<UpGame> {
   String tileName;
   Vector2 playerSize = Vector2.all(100);
 
@@ -13,8 +14,7 @@ class Tile extends PositionComponent with HasGameRef<UpGame> {
 
   @override
   Future<void>? onLoad() async {
-    final grassImage = gameRef.images.fromCache(tileName);
-    final grassSprite = Sprite(grassImage);
+    super.onLoad();
 
     final parallaxComponent = await ParallaxComponent.load(
       [ParallaxImageData('grass')],
@@ -25,7 +25,7 @@ class Tile extends PositionComponent with HasGameRef<UpGame> {
 
     add(parallaxComponent);
     //add(RectangleHitbox());
-    add(RectangleHitbox(
-        size: size + playerSize, position: -playerSize / 2, isSolid: true));
+    // add(RectangleHitbox(
+    //     size: size + playerSize, position: -playerSize / 2, isSolid: true));
   }
 }

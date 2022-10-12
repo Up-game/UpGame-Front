@@ -1,9 +1,6 @@
 library swlame;
 
+export 'src/body.dart';
+export 'src/dynamic_body.dart';
+export 'src/static_body.dart';
 export 'src/swlame.dart';
-
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
