@@ -7,17 +7,20 @@ import 'dynamic_body.dart';
 import 'swlame.dart';
 
 mixin StaticBody<T extends Swlame> on PositionComponent, HasGameRef<T> {
-  final RectangleHitbox resizedHitbox = RectangleHitbox();
   final Ray2 ray = Ray2.zero();
+  RectangleHitbox? resizedHitbox;
 
   RaycastResult<ShapeHitbox>? rayIntersection(DynamicBody body,
       {RaycastResult<ShapeHitbox>? out}) {
-    resizedHitbox.size = size + body.size;
-    resizedHitbox.position = absolutePosition - body.size / 2;
+    resizedHitbox = RectangleHitbox(
+        size: size + body.size,
+        position: absolutePosition - body.size / 2,
+        isSolid: true);
+
     ray.origin = body.center;
     ray.direction = body.velocity.normalized();
-
-    return resizedHitbox.rayIntersection(ray, out: out);
+    final result = resizedHitbox!.rayIntersection(ray, out: out);
+    return result;
   }
 
   @mustCallSuper

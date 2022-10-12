@@ -22,7 +22,8 @@ mixin DynamicBody<T extends Swlame> on PositionComponent, HasGameRef<T> {
       List<ShapeHitbox> ignoreHitboxes = [];
       while (true) {
         bool hit =
-            _rayCast(out: result, ignoreHitboxes: ignoreHitboxes) != null;
+            _rayCast(out: result, ignoreHitboxes: ignoreHitboxes) != null &&
+                result.intersectionPoint != null;
 
         if (hit && result.distance! <= velocity.length) {
           double diff = (velocity.length - result.distance!) / velocity.length;
