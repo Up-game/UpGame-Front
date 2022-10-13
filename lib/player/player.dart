@@ -5,7 +5,7 @@ import 'package:upgame/player/player_controller.dart';
 import 'package:upgame/raycast/raycasting.dart';
 import 'package:upgame/up_game.dart';
 
-enum PlayerState { idle, running }
+enum PlayerState { idle, running, jumping, falling }
 
 class Player extends PositionComponent
     with HasGameRef<UpGame>, DynamicBody<UpGame> {
@@ -82,10 +82,22 @@ class PlayerVisual extends PositionComponent with HasGameRef<UpGame> {
       srcSize: Vector2.all(32.0),
     ).createAnimation(row: 0, stepTime: 0.05);
 
+    final jumpAnimation = SpriteSheet(
+      image: gameRef.images.fromCache('frog_jump'),
+      srcSize: Vector2.all(32.0),
+    ).createAnimation(row: 0, stepTime: 0.05);
+
+    final fallAnimation = SpriteSheet(
+      image: gameRef.images.fromCache('frog_fall'),
+      srcSize: Vector2.all(32.0),
+    ).createAnimation(row: 0, stepTime: 0.05);
+
     playerAnimation = SpriteAnimationGroupComponent<PlayerState>(
       animations: {
         PlayerState.idle: idleAnimation,
         PlayerState.running: runAnimation,
+        PlayerState.jumping: jumpAnimation,
+        PlayerState.falling: fallAnimation,
       },
       current: PlayerState.idle,
       size: size,

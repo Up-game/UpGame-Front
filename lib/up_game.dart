@@ -33,6 +33,8 @@ class UpGame extends FlameGame
     Map<String, String> assets = {
       'frog_idle': 'ninja_frog/Idle (32x32).png',
       'frog_run': 'ninja_frog/Run (32x32).png',
+      'frog_jump': 'ninja_frog/Jump (32x32).png',
+      'frog_fall': 'ninja_frog/Fall (32x32).png',
       'joystick_position': 'joystick/ControllerPosition.png',
       'joystick_radius': 'joystick/ControllerRadius.png',
       'button_a': 'joystick/button_a.png',
