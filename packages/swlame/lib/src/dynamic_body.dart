@@ -37,7 +37,6 @@ mixin DynamicBody<T extends Swlame> on PositionComponent, HasGameRef<T> {
           break;
         }
       }
-      position.add(velocity);
     }
   }
 
