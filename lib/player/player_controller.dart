@@ -55,7 +55,7 @@ class LocalPlayerController extends PlayerController {
     }
   }
 
-  final double gravity = 200;
+  final double gravity = 400;
   final double maxGravity = 100;
   final double jumpForce = 500;
   final double maxJumpHeight = 200;
@@ -74,8 +74,9 @@ class LocalPlayerController extends PlayerController {
       }
       isJumpPressed = false;
       jumpHeight = 0;
-      _player.velocity.y += gravity * dt;
-      _player.velocity.y = _player.velocity.y.clamp(0, maxGravity);
+      _player.velocity.y = gravity * dt;
+      //_player.velocity.y *= dt;
+      //_player.velocity.y = _player.velocity.y.clamp(0, maxGravity);
     }
   }
 
