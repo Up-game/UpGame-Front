@@ -60,7 +60,7 @@ class Player extends PositionComponent
     rightRay.castRay();
     playerController?.update(dt);
     resolveCollision();
-    position.add(velocity);
+    position.add(nextDistance);
   }
 }
 

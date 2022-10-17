@@ -18,7 +18,7 @@ mixin StaticBody<T extends Swlame> on PositionComponent, HasGameRef<T> {
         isSolid: true);
 
     ray.origin = body.center;
-    ray.direction = body.velocity.normalized();
+    ray.direction = body.nextDistance.normalized();
     final result = resizedHitbox!.rayIntersection(ray, out: out);
     return result;
   }

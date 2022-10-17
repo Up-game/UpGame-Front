@@ -5,7 +5,7 @@ import 'package:swlame/swlame.dart';
 import 'swlame.dart';
 
 mixin DynamicBody<T extends Swlame> on PositionComponent, HasGameRef<T> {
-  final Vector2 velocity = Vector2.zero();
+  final Vector2 nextDistance = Vector2.zero();
 
   @mustCallSuper
   @override
@@ -17,21 +17,22 @@ mixin DynamicBody<T extends Swlame> on PositionComponent, HasGameRef<T> {
   void resolveCollision() {
     final RaycastResult<ShapeHitbox> result = RaycastResult();
 
-    if (velocity.length > 0) {
+    if (nextDistance.length > 0) {
       List<ShapeHitbox> ignoreHitboxes = [];
       while (true) {
         bool hit =
             _rayCast(out: result, ignoreHitboxes: ignoreHitboxes) != null &&
                 result.intersectionPoint != null;
 
-        if (hit && result.distance! <= velocity.length) {
-          double diff = (velocity.length - result.distance!) / velocity.length;
-          final velocityCorr = (velocity.clone()
+        if (hit && result.distance! <= nextDistance.length) {
+          double diff =
+              (nextDistance.length - result.distance!) / nextDistance.length;
+          final velocityCorr = (nextDistance.clone()
                 ..absolute()
                 ..multiply(result.normal!)) *
               diff;
-          velocity
-              .setFrom(velocity + velocityCorr + result.normal! * 0.000000001);
+          nextDistance.setFrom(
+              nextDistance + velocityCorr + result.normal! * 0.000000001);
           ignoreHitboxes.add(result.hitbox!);
         } else {
           break;

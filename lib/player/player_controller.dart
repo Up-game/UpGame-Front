@@ -38,7 +38,7 @@ class LocalPlayerController extends PlayerController {
       if (_player.isGrounded) {
         _player.playerVisual.playerAnimation.current = PlayerState.running;
       }
-      _player.velocity.x = joystick.delta.x * maxSpeed * dt;
+      _player.nextDistance.x = joystick.delta.x * maxSpeed * dt;
 
       if (joystick.delta.x < 0 &&
           !_player.playerVisual.playerAnimation.isFlippedHorizontally) {
@@ -51,7 +51,7 @@ class LocalPlayerController extends PlayerController {
       if (_player.isGrounded) {
         _player.playerVisual.playerAnimation.current = PlayerState.idle;
       }
-      _player.velocity.x = 0;
+      _player.nextDistance.x = 0;
     }
   }
 
@@ -65,8 +65,8 @@ class LocalPlayerController extends PlayerController {
 
   void handleJump(double dt) {
     if (isJumpPressed && jumpHeight <= maxJumpHeight) {
-      _player.velocity.y = -jumpForce * dt;
-      jumpHeight += _player.velocity.y.abs();
+      _player.nextDistance.y = -jumpForce * dt;
+      jumpHeight += _player.nextDistance.y.abs();
       _player.playerVisual.playerAnimation.current = PlayerState.jumping;
     } else {
       if (!_player.isGrounded) {
@@ -74,7 +74,7 @@ class LocalPlayerController extends PlayerController {
       }
       isJumpPressed = false;
       jumpHeight = 0;
-      _player.velocity.y = gravity * dt;
+      _player.nextDistance.y = gravity * dt;
       //_player.velocity.y *= dt;
       //_player.velocity.y = _player.velocity.y.clamp(0, maxGravity);
     }
